@@ -1,4 +1,4 @@
-export default function Button({children}: any) {
+export default function Button({children}: {children: React.ReactNode}) {
   return (
     <div className="px-8 py-4">
       <div className="grid gap-8 items-start justify-center">

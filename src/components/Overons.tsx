@@ -63,10 +63,10 @@ export default function Overons() {
                   </div>
                   <div className="space-y-4">
                     <p className="text-gray-300 leading-relaxed">
-                      "Ik geloof dat elke auto een verhaal vertelt. Bij NXT
+                      &quot;Ik geloof dat elke auto een verhaal vertelt. Bij NXT
                       Motion helpen wij jou het beste uit je auto te halen,
                       zodat jij de weg op kunt met een voertuig dat echt bij je
-                      past."
+                      past.&quot;
                     </p>
                     <div className="pt-4">
                       <span className="inline-block text-[#e76e7b] font-semibold">
@@ -94,9 +94,9 @@ export default function Overons() {
                   </div>
                   <div className="space-y-4">
                     <p className="text-gray-300 leading-relaxed">
-                      "De techniek achter elke auto is een wereld op zich. Mijn
+                      &quot;De techniek achter elke auto is een wereld op zich. Mijn
                       passie ligt bij het ontdekken van verborgen opties en het
-                      maximaliseren van wat jouw auto kan bieden."
+                      maximaliseren van wat jouw auto kan bieden.&quot;
                     </p>
                     <div className="pt-4">
                       <span className="inline-block text-[#eec0a8] font-semibold">
@@ -177,7 +177,7 @@ export default function Overons() {
                             </svg>
                           </div>
                           <span className="text-white font-medium">
-                            Kwalitatieve en betrouwbare auto's
+                            Kwalitatieve en betrouwbare auto&apos;s
                           </span>
                         </div>
 
@@ -404,7 +404,7 @@ export default function Overons() {
                       <div className="relative w-60 h-60 rounded-2xl overflow-hidden group-hover:scale-105 transition-all duration-300">
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70 z-10"></div>
                         <img
-                          src="/images/car-image.jpg"
+                          src="/nxtmotion-text.png"
                           alt="Luxury car"
                           className="w-full h-full object-cover object-center"
                           onError={(e) => {

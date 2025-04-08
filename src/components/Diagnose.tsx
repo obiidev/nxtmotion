@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 export default function Diagnose() {
   return (
     <div id="Diagnose" className="min-h-screen relative">
