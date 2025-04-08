@@ -1,26 +1,47 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  /* Basic background color */
+  background-color: #050505;
+  color: #ffffff;
   font-family: Arial, Helvetica, sans-serif;
+  position: relative;
+}
+
+/* Texture and background effects */
+.texture-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.texture-overlay::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(45deg, rgba(40, 40, 40, 0.05) 25%, transparent 25%, transparent 50%, rgba(40, 40, 40, 0.05) 50%, rgba(40, 40, 40, 0.05) 75%, transparent 75%, transparent);
+  background-size: 20px 20px, 20px 20px;
+  opacity: 0.15;
+}
+
+.texture-overlay::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(231, 110, 123, 0.05) 0%, rgba(238, 192, 168, 0.05) 100%);
+  opacity: 0.1;
 }
