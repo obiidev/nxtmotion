@@ -119,10 +119,7 @@ export default function Contact() {
                         <h3 className="text-white font-semibold text-lg">
                           Telefonisch bereikbaar
                         </h3>
-                        <p className="text-gray-300">+31 6 12 34 56 78</p>
-                        <p className="text-gray-400 text-sm mt-1">
-                          Ma-Vr: 09:00 - 18:00
-                        </p>
+                        <p className="text-gray-300">+31 6 17 15 29 16</p>
                       </div>
                     </div>
 
@@ -146,7 +143,7 @@ export default function Contact() {
                         <h3 className="text-white font-semibold text-lg">
                           Email
                         </h3>
-                        <p className="text-gray-300">info@nxtmotion.nl</p>
+                        <p className="text-gray-300">Nxtmotion@hotmail.com</p>
                         <p className="text-gray-400 text-sm mt-1">
                           Wij reageren binnen 24 uur
                         </p>

@@ -281,7 +281,7 @@ export default function Overons() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap gap-3">
                       {/* Phone Button */}
                       <a
-                        href="tel:+31612345678"
+                        href="tel:+31617152916"
                         className="px-4 py-3 text-white font-medium rounded-full bg-gradient-to-r from-[#e76e7b] to-[#eec0a8] hover:shadow-lg hover:shadow-[#e76e7b]/20 transition-all duration-300 flex items-center justify-center"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -304,7 +304,7 @@ export default function Overons() {
 
                       {/* WhatsApp Button */}
                       <a
-                        href="https://wa.me/31612345678"
+                        href="https://wa.me/31617152916"
                         className="px-4 py-3 text-white font-medium rounded-full bg-[#25D366]/80 hover:bg-[#25D366] border border-white/10 hover:border-white/30 transition-all duration-300 flex items-center justify-center"
                         target="_blank"
                         rel="noopener noreferrer"
