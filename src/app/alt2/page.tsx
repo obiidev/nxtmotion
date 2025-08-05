@@ -28,7 +28,6 @@ export default function Home() {
       </header>
       <div className="relative">
         <HeroSectionAlt2 />
-        {/*Gooi hier ons aanbod stukje die door verwijst naar catalogus*/}
         <OnsAanbodAlt />
         <Opties />
         <Diagnose />

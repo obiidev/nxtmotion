@@ -1,5 +1,5 @@
 import NavBar from '@/components/nav/NavBar';
-import HeroSectionAlt2 from '@/components/HeroSectionAlt2';
+import HeroSectionAlt from '@/components/HeroSectionAlt';
 import Opties from '@/components/table/Opties';
 import Diagnose from '@/components/Diagnose';
 import Overons from '@/components/Overons';
@@ -27,8 +27,7 @@ export default function Home() {
         <NavBar></NavBar>
       </header>
       <div className="relative">
-        <HeroSectionAlt2 />
-        {/*Gooi hier ons aanbod stukje die door verwijst naar catalogus*/}
+        <HeroSectionAlt />
         <OnsAanbodAlt />
         <Opties />
         <Diagnose />

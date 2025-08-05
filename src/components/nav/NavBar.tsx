@@ -5,9 +5,11 @@ import { Dialog, DialogPanel } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
 const listItems = [
-  { title: 'Verborgen opties', link: '#Opties' },
-  { title: 'Wie zijn we?', link: '#Overons' },
-  { title: 'Diagnose', link: '#Diagnose' },
+  { title: 'Ontdek Ons Aanbod', link: '/#Ontdek-Ons-Aanbod' },
+  { title: 'Verborgen opties', link: '/#Opties' },
+  { title: 'Wie zijn wij?', link: '/#Overons' },
+  { title: 'Diagnose', link: '/#Diagnose' },
+  { title: 'Catalogus', link: '/catalogus' },
 ];
 
 export default function NavBar(): React.ReactElement {
@@ -59,7 +61,7 @@ export default function NavBar(): React.ReactElement {
         className="flex items-center justify-between p-4 py-3 md:p-6 lg:px-8 max-w-7xl mx-auto transition-all duration-300"
       >
         <div className="flex items-center">
-          <a href="#" className="flex items-center">
+          <a href="/#" className="flex items-center">
             <img alt="" src="/nxtmotion-text.png" className="h-8 w-auto" />
           </a>
         </div>
