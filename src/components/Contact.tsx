@@ -143,7 +143,7 @@ export default function Contact() {
                         <h3 className="text-white font-semibold text-lg">
                           Email
                         </h3>
-                        <p className="text-gray-300">Nxtmotion@hotmail.com</p>
+                        <p className="text-gray-300">contact@nxt-motion.nl</p>
                         <p className="text-gray-400 text-sm mt-1">
                           Wij reageren binnen 24 uur
                         </p>
