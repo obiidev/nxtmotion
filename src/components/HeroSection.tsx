@@ -2,10 +2,9 @@
 
 import { useState, useEffect } from 'react';
 
-export default function HeroSectionAlt() {
+export default function HeroSection() {
   const [showFirstSection, setShowFirstSection] = useState(true);
 
-  // Function to handle smooth scrolling to a section
   const handleScrollTo = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -14,14 +13,11 @@ export default function HeroSectionAlt() {
   };
 
   useEffect(() => {
-    // Only set up the interval for mobile view
     const mediaQuery = window.matchMedia('(max-width: 767px)');
-
     if (mediaQuery.matches) {
       const interval = setInterval(() => {
         setShowFirstSection((prev) => !prev);
       }, 6000);
-
       return () => clearInterval(interval);
     }
   }, []);
@@ -129,22 +125,9 @@ export default function HeroSectionAlt() {
                 Ontgrendel verborgen opties
               </span>
             </button>
-
-
           </div>
         </div>
       </div>
-
-      {/* <div className="absolute inset-0 flex items-end justify-center pb-8 sm:pb-16">
-        <div className="z-50 text-center motion-opacity-in-0 motion-translate-y-in-100 motion-blur-in-md px-4">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-wider mb-2 sm:mb-4 bg-gradient-to-r from-[#e76e7b] to-[#eec0a8] text-transparent bg-clip-text">
-            NXT MOTION
-          </h1>
-          <p className="text-xl sm:text-2xl md:text-3xl font-light tracking-wide text-white">
-            Your Vehicle, Our Passion
-          </p>
-        </div>
-      </div> */}
     </div>
   );
 }
