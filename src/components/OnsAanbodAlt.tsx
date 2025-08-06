@@ -1,9 +1,9 @@
 export default function OnsAanbodAlt() {
   const cars = [
-    { src: "/images/vw_golf_front.png", alt: "Volkswagen Golf", translate: "-translate-y-[32%]" },
-    { src: "/images/vw3_front.png", alt: "Volkswagen VW3", translate: "-translate-y-[34%]" },
-    { src: "/images/vw_polo_front.png", alt: "Volkswagen Polo", translate: "-translate-y-[35%]" },
-    { src: "/images/audi_front.png", alt: "Audi", translate: "-translate-y-[26%]" },
+    { src: "/images/ons_aanbod/vw_golf_front.png", alt: "Volkswagen Golf", translate: "-translate-y-[32%]" },
+    { src: "/images/ons_aanbod/vw3_front.png", alt: "Volkswagen VW3", translate: "-translate-y-[34%]" },
+    { src: "/images/ons_aanbod/vw_polo_front.png", alt: "Volkswagen Polo", translate: "-translate-y-[35%]" },
+    { src: "/images/ons_aanbod/audi_front.png", alt: "Audi", translate: "-translate-y-[26%]" },
   ];
 
   return (
