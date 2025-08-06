@@ -108,27 +108,27 @@
     "price": 69000
   },
   {
-    "id": 13,
-    "title": "TestCar",
-    "description": "nice",
-    "image": "/images/cars/white_fennec_front_facing_left_1754474600957.webp",
-    "make": "BMW",
-    "year": 2022,
-    "fuel": "petrol",
-    "mileage": 40000,
-    "transmission": "automatic",
-    "price": 20000
-  },
-  {
     "id": 14,
-    "title": "tt",
+    "title": "White Fennec",
     "description": "tt",
     "image": "/images/cars/white_fennec_front_facing_left_1754474589513.webp",
-    "make": "Volkswagen",
+    "make": "BMW",
     "year": 2022,
     "fuel": "diesel",
     "mileage": 30000,
     "transmission": "automatic",
     "price": 20000
+  },
+  {
+    "title": "Octane",
+    "description": "cool wagon",
+    "image": "/images/cars/octane_front_facing_left_1754475762161.png",
+    "make": "Volkswagen",
+    "year": 2016,
+    "fuel": "electric",
+    "mileage": 10000,
+    "transmission": "automatic",
+    "price": 24000,
+    "id": 15
   }
 ]
