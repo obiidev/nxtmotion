@@ -58,7 +58,7 @@ export default function HeroSectionAlt() {
             Bekijk ons aanbod
           </h1>
           <p className="text-white text-base sm:text-lg mb-6 opacity-90">
-            Ontdek en activeer verborgen functies in je voertuig om de volledige potentie te benutten!
+            Verken alle opties en upgrades voor jouw voertuig en haal het maximale eruit!
           </p>
             <button 
               onClick={() => handleScrollTo('Ontdek-Ons-Aanbod')}
@@ -100,8 +100,7 @@ export default function HeroSectionAlt() {
             Ontdek wat er écht mogelijk is!
           </h1>
           <p className="text-white text-base sm:text-lg mb-6 opacity-90 text-right">
-              Ontdek en activeer verborgen functies in je voertuig om de volledige
-            potentie te benutten!
+            Ontdek en activeer verborgen functies in je voertuig om de volledige potentie te benutten!
           </p>
           <div className="flex justify-end">
             <button 
