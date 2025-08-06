@@ -1,10 +1,10 @@
 import NavBar from '@/components/nav/NavBar';
-import HeroSection from '@/components/HeroSection';
-import Opties from '@/components/table/Opties';
-import Diagnose from '@/components/Diagnose';
-import Overons from '@/components/Overons';
-import Contact from '@/components/Contact';
-import OnsAanbod from '@/components/OnsAanbod';
+import HeroSection from '@/components/home/HeroSection';
+import Opties from '@/components/home/table/Opties';
+import Diagnose from '@/components/home/Diagnose';
+import Overons from '@/components/home/Overons';
+import Contact from '@/components/home/Contact';
+import OnsAanbod from '@/components/home/OnsAanbod';
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#050505] relative">
@@ -28,7 +28,6 @@ export default function Home() {
       </header>
       <div className="relative">
         <HeroSection />
-        {/*Gooi hier ons aanbod stukje die door verwijst naar catalogus*/}
         <OnsAanbod />
         <Opties />
         <Diagnose />
