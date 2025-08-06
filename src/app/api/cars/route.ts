@@ -51,8 +51,58 @@ export async function POST(request: Request) {
   if (!validateApiKey(request)) {
     return corsResponse({ message: "Unauthorized" }, 401);
   }
+
+  const contentType = request.headers.get("content-type") || "";
+
   try {
-    const newCar = await request.json();
+    let newCar;
+
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await request.formData();
+      const file = formData.get("image") as File;
+
+      const title = formData.get("title") as string;
+      const description = formData.get("description") as string;
+      const make = formData.get("make") as string;
+      const year = Number(formData.get("year"));
+      const fuel = formData.get("fuel") as string;
+      const mileage = Number(formData.get("mileage"));
+      const transmission = formData.get("transmission") as string;
+      const price = Number(formData.get("price"));
+
+      let imagePath = "";
+
+      if (file && file.name) {
+        const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+
+        const fileNameParts = file.name.split(".");
+        const extension = fileNameParts.pop();
+        const baseName = fileNameParts.join(".");
+        const fileName = `${baseName}_${Date.now()}.${extension}`;
+
+        const savePath = path.join(process.cwd(), "public", "images", "cars", fileName);
+        await fs.writeFile(savePath, buffer);
+
+        imagePath = `/images/cars/${fileName}`;
+      }
+
+      newCar = {
+        title,
+        description,
+        image: imagePath,
+        make,
+        year,
+        fuel,
+        mileage,
+        transmission,
+        price,
+      };
+    } else {
+      // fallback: accept raw JSON body
+      newCar = await request.json();
+    }
+
     const data = await fs.readFile(filePath, "utf-8");
     const cars = JSON.parse(data);
 
@@ -64,16 +114,71 @@ export async function POST(request: Request) {
     await fs.writeFile(filePath, JSON.stringify(cars, null, 2), "utf-8");
     return corsResponse(newCar, 201);
   } catch (error) {
+    console.error(error);
     return corsResponse({ message: "Failed to add car" }, 500);
   }
 }
+
 
 export async function PUT(request: Request) {
   if (!validateApiKey(request)) {
     return corsResponse({ message: "Unauthorized" }, 401);
   }
+
+  const contentType = request.headers.get("content-type") || "";
+
   try {
-    const updatedCar = await request.json();
+    let updatedCar;
+
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await request.formData();
+      const file = formData.get("image") as File;
+
+      // Extract fields from formData
+      const id = Number(formData.get("id"));
+      const title = formData.get("title") as string;
+      const description = formData.get("description") as string;
+      const make = formData.get("make") as string;
+      const year = Number(formData.get("year"));
+      const fuel = formData.get("fuel") as string;
+      const mileage = Number(formData.get("mileage"));
+      const transmission = formData.get("transmission") as string;
+      const price = Number(formData.get("price"));
+
+      let imagePath = "";
+
+      if (file && file.name) {
+        const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+
+        const fileNameParts = file.name.split(".");
+        const extension = fileNameParts.pop();
+        const baseName = fileNameParts.join(".");
+        const fileName = `${baseName}_${Date.now()}.${extension}`;
+
+        const savePath = path.join(process.cwd(), "public", "images", "cars", fileName);
+        await fs.writeFile(savePath, buffer);
+
+        imagePath = `/images/cars/${fileName}`;
+      }
+
+      updatedCar = {
+        id,
+        title,
+        description,
+        image: imagePath || "", // if no new image uploaded, maybe keep old image? handle this later
+        make,
+        year,
+        fuel,
+        mileage,
+        transmission,
+        price,
+      };
+    } else {
+      // fallback: accept raw JSON body
+      updatedCar = await request.json();
+    }
+
     const data = await fs.readFile(filePath, "utf-8");
     const cars = JSON.parse(data);
 
@@ -82,14 +187,21 @@ export async function PUT(request: Request) {
       return corsResponse({ message: "Car not found" }, 404);
     }
 
+    // If no new image uploaded, keep old image path:
+    if (!updatedCar.image) {
+      updatedCar.image = cars[index].image;
+    }
+
     cars[index] = updatedCar;
 
     await fs.writeFile(filePath, JSON.stringify(cars, null, 2), "utf-8");
     return corsResponse(updatedCar);
   } catch (error) {
+    console.error(error);
     return corsResponse({ message: "Failed to update car" }, 500);
   }
 }
+
 
 export async function DELETE(request: Request) {
   if (!validateApiKey(request)) {
