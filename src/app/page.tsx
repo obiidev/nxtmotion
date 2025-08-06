@@ -1,10 +1,10 @@
 import NavBar from '@/components/nav/NavBar';
-import HeroSectionAlt2 from '@/components/HeroSectionAlt2';
+import HeroSection from '@/components/HeroSection';
 import Opties from '@/components/table/Opties';
 import Diagnose from '@/components/Diagnose';
 import Overons from '@/components/Overons';
 import Contact from '@/components/Contact';
-import OnsAanbodAlt from '@/components/OnsAanbodAlt';
+import OnsAanbod from '@/components/OnsAanbod';
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#050505] relative">
@@ -27,9 +27,9 @@ export default function Home() {
         <NavBar></NavBar>
       </header>
       <div className="relative">
-        <HeroSectionAlt2 />
+        <HeroSection />
         {/*Gooi hier ons aanbod stukje die door verwijst naar catalogus*/}
-        <OnsAanbodAlt />
+        <OnsAanbod />
         <Opties />
         <Diagnose />
         <Overons />

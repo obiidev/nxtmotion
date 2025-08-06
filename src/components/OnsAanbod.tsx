@@ -1,4 +1,67 @@
+"use client";
+
+import { useRef } from 'react';
+
+
+function ImageMarquee() {
+  const marqueeRef = useRef<HTMLDivElement>(null);
+
+  const cars = [
+    { src: "/images/ons_aanbod/vw_golf_front.png", alt: "Volkswagen Golf", translate: "-translate-y-[32%]" },
+    { src: "/images/ons_aanbod/vw3_front.png", alt: "Volkswagen VW3", translate: "-translate-y-[34%]" },
+    { src: "/images/ons_aanbod/vw_polo_front.png", alt: "Volkswagen Polo", translate: "-translate-y-[35%]" },
+    { src: "/images/ons_aanbod/audi_front.png", alt: "Audi", translate: "-translate-y-[26%]" },
+    { src: "/images/ons_aanbod/vw_golf_front.png", alt: "Volkswagen Golf", translate: "-translate-y-[32%]" },
+    { src: "/images/ons_aanbod/vw3_front.png", alt: "Volkswagen VW3", translate: "-translate-y-[34%]" },
+    { src: "/images/ons_aanbod/vw_polo_front.png", alt: "Volkswagen Polo", translate: "-translate-y-[35%]" },
+    { src: "/images/ons_aanbod/audi_front.png", alt: "Audi", translate: "-translate-y-[26%]" },
+    { src: "/images/ons_aanbod/vw_golf_front.png", alt: "Volkswagen Golf", translate: "-translate-y-[32%]" },
+    { src: "/images/ons_aanbod/vw3_front.png", alt: "Volkswagen VW3", translate: "-translate-y-[34%]" },
+    { src: "/images/ons_aanbod/vw_polo_front.png", alt: "Volkswagen Polo", translate: "-translate-y-[35%]" },
+    { src: "/images/ons_aanbod/audi_front.png", alt: "Audi", translate: "-translate-y-[26%]" },
+    { src: "/images/ons_aanbod/vw_golf_front.png", alt: "Volkswagen Golf", translate: "-translate-y-[32%]" },
+    { src: "/images/ons_aanbod/vw3_front.png", alt: "Volkswagen VW3", translate: "-translate-y-[34%]" },
+    { src: "/images/ons_aanbod/vw_polo_front.png", alt: "Volkswagen Polo", translate: "-translate-y-[35%]" },
+    { src: "/images/ons_aanbod/audi_front.png", alt: "Audi", translate: "-translate-y-[26%]" },
+  ];
+
+  return (
+    <div className="relative w-full overflow-hidden py-6">
+      <div
+        ref={marqueeRef}
+        className="flex whitespace-nowrap animate-marquee"
+      >
+        {[...Array(2)].map((_, i) => (
+          <div key={i} className="flex space-x-6 px-4">
+            {cars.map(({ src, alt, translate }, idx) => (
+              <div
+                key={idx}
+                className="relative w-48 aspect-[4/3] overflow-hidden rounded-lg shadow-lg bg-black"
+              >
+                <img
+                  src={src}
+                  alt={alt}
+                  className={`absolute top-0 left-0 w-full min-h-full object-cover ${translate}`}
+                />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
+
 export default function OnsAanbod() {
+  const cars = [
+    { src: "/images/ons_aanbod/vw_golf_front.png", alt: "Volkswagen Golf", translate: "-translate-y-[32%]" },
+    { src: "/images/ons_aanbod/vw3_front.png", alt: "Volkswagen VW3", translate: "-translate-y-[34%]" },
+    { src: "/images/ons_aanbod/vw_polo_front.png", alt: "Volkswagen Polo", translate: "-translate-y-[35%]" },
+    { src: "/images/ons_aanbod/audi_front.png", alt: "Audi", translate: "-translate-y-[26%]" },
+  ];
+
   return (
     <div id="Ontdek-Ons-Aanbod" className="relative max-w-5xl mx-auto px-6 py-16">
       <div className="absolute inset-0 bg-gradient-to-br from-[#e76e7b]/20 to-[#eec0a8]/20 rounded-xl blur"></div>
@@ -14,37 +77,23 @@ export default function OnsAanbod() {
           Vind jouw perfecte auto en ervaar de kwaliteit en service die we bieden.
         </p>
 
-        {/* Car images */}
-        <div className="flex justify-center gap-6">
-          <div className="w-48 h-36 overflow-hidden rounded-lg shadow-lg">
-            <img
-              src="/images/vw_front.png"
-              alt="Volkswagen Polo"
-              className="w-full h-auto object-cover translate-y-[-32%]"
-            />
-          </div>
-                    <div className="w-48 h-36 overflow-hidden rounded-lg shadow-lg">
-            <img
-              src="/images/vw_back.png"
-              alt="Volkswagen Polo"
-              className="w-full h-auto object-cover translate-y-[-29%]"
-            />
-          </div>
-          <div className="w-48 h-36 overflow-hidden rounded-lg shadow-lg">
-            <img
-              src="/images/vw2_front.png"
-              alt="BMW"
-              className="w-full h-auto object-cover translate-y-[-35%]"
-            />
-          </div>
-                    <div className="w-48 h-36 overflow-hidden rounded-lg shadow-lg">
-            <img
-              src="/images/vw2_back.png"
-              alt="Volkswagen Polo"
-              className="w-full h-auto object-cover translate-y-[-33%]"
-            />
-          </div>
+    {/* Car images
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 justify-center">
+      {cars.map(({ src, alt, translate }) => (
+        <div key={src} className="relative w-full aspect-[4/3] overflow-hidden rounded-lg shadow-lg">
+          <img
+            src={src}
+            alt={alt}
+            className={`absolute top-0 left-0 w-full min-h-full object-cover ${translate}`}
+          />
         </div>
+      ))}
+    </div> */}
+
+    {/* Move marquee OUTSIDE the grid */}
+    <div className="max-w-5xl mx-auto mt-12">
+      <ImageMarquee />
+    </div>
 
 
 

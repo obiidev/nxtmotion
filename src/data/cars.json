@@ -94,41 +94,5 @@
     "mileage": 15000,
     "transmission": "automatic",
     "price": 46000
-  },
-  {
-    "id": 12,
-    "title": "BATMOBILE WTF?",
-    "description": "Luxury compact SUV with sporty performance.",
-    "image": "/images/cars/white_fennec_front_facing_left_1754474618844.webp",
-    "make": "Mercedes-Benz",
-    "year": 2023,
-    "fuel": "hybrid",
-    "mileage": 15000,
-    "transmission": "automatic",
-    "price": 69000
-  },
-  {
-    "id": 14,
-    "title": "White Fennec",
-    "description": "tt",
-    "image": "/images/cars/white_fennec_front_facing_left_1754474589513.webp",
-    "make": "BMW",
-    "year": 2022,
-    "fuel": "diesel",
-    "mileage": 30000,
-    "transmission": "automatic",
-    "price": 20000
-  },
-  {
-    "title": "Octane",
-    "description": "cool wagon",
-    "image": "/images/cars/octane_front_facing_left_1754475762161.png",
-    "make": "Volkswagen",
-    "year": 2016,
-    "fuel": "electric",
-    "mileage": 10000,
-    "transmission": "automatic",
-    "price": 24000,
-    "id": 15
   }
 ]

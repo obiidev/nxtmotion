@@ -45,3 +45,23 @@ body {
   background: linear-gradient(135deg, rgba(231, 110, 123, 0.05) 0%, rgba(238, 192, 168, 0.05) 100%);
   opacity: 0.1;
 }
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-500%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 240s linear infinite;
+}
+
+@media (max-width: 768px) {
+  .animate-marquee {
+    animation-duration: 80s; /* faster on mobile */
+  }
+}
+
