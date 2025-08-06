@@ -2,7 +2,8 @@
   {
     "id": 1,
     "title": "Volkswagen Golf",
-    "description": "Reliable hatchback with great fuel efficiency.",
+    "catch": "Reliable hatchback with great fuel efficiency.",
+    "description": "test",
     "image": "/images/cars/vw_golf_front.png",
     "make": "Volkswagen",
     "year": 2021,
@@ -14,7 +15,8 @@
   {
     "id": 2,
     "title": "Volkswagen Passat",
-    "description": "Spacious and comfortable family sedan.",
+    "catch": "Spacious and comfortable family sedan.",
+    "description": "",
     "image": "/images/cars/vw_passat.png",
     "make": "Volkswagen",
     "year": 2019,
@@ -26,7 +28,8 @@
   {
     "id": 3,
     "title": "Volkswagen ID.4",
-    "description": "All-electric SUV with cutting-edge tech.",
+    "catch": "All-electric SUV with cutting-edge tech.",
+    "description": "",
     "image": "/images/cars/vw_id4.png",
     "make": "Volkswagen",
     "year": 2023,
@@ -38,7 +41,8 @@
   {
     "id": 4,
     "title": "Volkswagen Polo",
-    "description": "Compact city car with modern styling.",
+    "catch": "Compact city car with modern styling.",
+    "description": "",
     "image": "/images/cars/vw_polo_front.png",
     "make": "Volkswagen",
     "year": 2020,
@@ -50,7 +54,8 @@
   {
     "id": 5,
     "title": "Volkswagen Tiguan",
-    "description": "Mid-size SUV with premium feel and safety features.",
+    "catch": "Mid-size SUV with premium feel and safety features.",
+    "description": "",
     "image": "/images/cars/vw_tiguan.png",
     "make": "Volkswagen",
     "year": 2022,
@@ -62,7 +67,8 @@
   {
     "id": 6,
     "title": "BMW 3 Series",
-    "description": "Sporty sedan with excellent handling.",
+    "catch": "Sporty sedan with excellent handling.",
+    "description": "",
     "image": "/images/cars/bmw_s3.png",
     "make": "BMW",
     "year": 2021,
@@ -74,7 +80,8 @@
   {
     "id": 7,
     "title": "Mercedes-Benz C-Class",
-    "description": "Luxury sedan with high-end features and comfort.",
+    "catch": "Luxury sedan with high-end features and comfort.",
+    "description": "",
     "image": "/images/cars/mercedes_c.png",
     "make": "Mercedes-Benz",
     "year": 2020,
@@ -86,7 +93,8 @@
   {
     "id": 8,
     "title": "Mercedes-Benz GLC",
-    "description": "Luxury compact SUV with sporty performance.",
+    "catch": "Luxury compact SUV with sporty performance.",
+    "description": "",
     "image": "/images/cars/mercedes_glc.png",
     "make": "Mercedes-Benz",
     "year": 2022,

@@ -5,6 +5,7 @@ import { useEffect, useState, ChangeEvent, FormEvent } from "react";
 interface Car {
   id: number;
   title: string;
+  catch: string; // <-- new field
   description: string;
   image: string;
   make: string;
@@ -15,6 +16,7 @@ interface Car {
   price: number;
 }
 
+
 export default function CatalogueManager() {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,6 +26,7 @@ export default function CatalogueManager() {
   const [editingCarId, setEditingCarId] = useState<number | null>(null);
   const [formState, setFormState] = useState({
     title: "",
+    catch: "",
     description: "",
     image: null as File | null,
     make: "",
@@ -75,22 +78,23 @@ export default function CatalogueManager() {
     setFormState((prev) => ({ ...prev, image: file }));
   }
 
-  // Open form to edit existing car
-  function handleEditClick(car: Car) {
-    setEditingCarId(car.id);
-    setFormState({
-      title: car.title,
-      description: car.description,
-      image: null, // user can upload new image or leave as is
-      make: car.make,
-      year: car.year.toString(),
-      fuel: car.fuel,
-      mileage: car.mileage.toString(),
-      transmission: car.transmission,
-      price: car.price.toString(),
-    });
-    setShowForm(true);
-  }
+function handleEditClick(car: Car) {
+  setEditingCarId(car.id);
+  setFormState({
+    title: car.title,
+    catch: car.catch, // <-- added
+    description: car.description, // description is now always empty
+    image: null,
+    make: car.make,
+    year: car.year.toString(),
+    fuel: car.fuel,
+    mileage: car.mileage.toString(),
+    transmission: car.transmission,
+    price: car.price.toString(),
+  });
+  setShowForm(true);
+}
+
 
   // Delete car by id
   async function handleDeleteClick(id: number) {
@@ -122,7 +126,8 @@ export default function CatalogueManager() {
     try {
       const formData = new FormData();
       formData.append("title", formState.title);
-      formData.append("description", formState.description);
+      formData.append("catch", formState.catch);
+      formData.append("description", formState.description); // intentionally empty
       if (formState.image) formData.append("image", formState.image);
       formData.append("make", formState.make);
       formData.append("year", formState.year);
@@ -164,6 +169,7 @@ export default function CatalogueManager() {
 
       setFormState({
         title: "",
+        catch: "",
         description: "",
         image: null,
         make: "",
@@ -197,6 +203,7 @@ export default function CatalogueManager() {
             setEditingCarId(null);
             setFormState({
               title: "",
+              catch: "",
               description: "",
               image: null,
               make: "",
@@ -233,10 +240,22 @@ export default function CatalogueManager() {
               className="w-full p-2 rounded bg-gray-800"
             />
             <textarea
+              name="catch"
+              value={(formState as any).catch || ""}
+              onChange={(e) =>
+                setFormState((prev) => ({ ...prev, catch: e.target.value }))
+              }
+              placeholder="Short catch / summary"
+              rows={3}
+              className="w-full p-2 rounded bg-gray-800"
+            />
+            <textarea
               name="description"
-              value={formState.description}
-              onChange={handleInputChange}
-              placeholder="Description"
+              value={(formState as any).description || ""}
+              onChange={(e) =>
+                setFormState((prev) => ({ ...prev, description: e.target.value }))
+              }
+              placeholder="car origin / additional information"
               rows={3}
               className="w-full p-2 rounded bg-gray-800"
             />
@@ -348,6 +367,12 @@ export default function CatalogueManager() {
               Titel
             </th>
             <th scope="col" className="px-4 py-3">
+              Catch
+            </th>
+            <th scope="col" className="px-4 py-3">
+              Description
+            </th>
+            <th scope="col" className="px-4 py-3">
               Merk
             </th>
             <th scope="col" className="px-4 py-3">
@@ -384,6 +409,8 @@ export default function CatalogueManager() {
                 />
               </td>
               <td className="px-4 py-2">{car.title}</td>
+              <td className="px-4 py-2">{car.catch}</td>
+              <td className="px-4 py-2">{car.description}</td>
               <td className="px-4 py-2">{car.make}</td>
               <td className="px-4 py-2">{car.year}</td>
               <td className="px-4 py-2 capitalize">{car.fuel}</td>
