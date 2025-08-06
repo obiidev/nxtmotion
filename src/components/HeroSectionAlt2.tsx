@@ -135,7 +135,7 @@ export default function HeroSectionAlt() {
         </div>
       </div>
 
-      <div className="absolute inset-0 flex items-end justify-center pb-8 sm:pb-16">
+      {/* <div className="absolute inset-0 flex items-end justify-center pb-8 sm:pb-16">
         <div className="z-50 text-center motion-opacity-in-0 motion-translate-y-in-100 motion-blur-in-md px-4">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-wider mb-2 sm:mb-4 bg-gradient-to-r from-[#e76e7b] to-[#eec0a8] text-transparent bg-clip-text">
             NXT MOTION
@@ -144,7 +144,7 @@ export default function HeroSectionAlt() {
             Your Vehicle, Our Passion
           </p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

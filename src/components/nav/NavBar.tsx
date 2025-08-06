@@ -90,7 +90,7 @@ export default function NavBar(): React.ReactElement {
         </div>
         <div className="flex items-center gap-4 lg:hidden">
           <a 
-            href="#Contact" 
+            href="/#Contact" 
             onClick={handleAnchorClick}
             className="flex items-center justify-center p-[2px] rounded-md bg-gradient-to-r from-[#e76e7b] to-[#eec0a8] shadow-md shadow-rose-300/10 cursor-pointer text-white font-semibold text-sm hover:opacity-95 transition-all"
           >
