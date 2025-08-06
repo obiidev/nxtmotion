@@ -106,17 +106,5 @@
     "mileage": 15000,
     "transmission": "automatic",
     "price": 69000
-  },
-  {
-    "id": 9,
-    "title": "h-Benz GLC",
-    "description": "Luxury compact SUV with sporty performance.",
-    "image": "/images/mercedes_glc.png",
-    "make": "Mercedes-Benz",
-    "year": 2022,
-    "fuel": "hybrid",
-    "mileage": 15000,
-    "transmission": "automatic",
-    "price": 46000
   }
 ]
