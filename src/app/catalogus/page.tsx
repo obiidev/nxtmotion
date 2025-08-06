@@ -1,6 +1,6 @@
 "use client";
 
-import NavBar from "@/components/nav/NavBar";
+import NavBar from "@/components/NavBar";
 import Catalogue from "@/components/Catalogue";
 
 export default function CataloguePage() {

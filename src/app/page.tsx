@@ -1,4 +1,4 @@
-import NavBar from '@/components/nav/NavBar';
+import NavBar from '@/components/NavBar';
 import HeroSection from '@/components/home/HeroSection';
 import Opties from '@/components/home/table/Opties';
 import Diagnose from '@/components/home/Diagnose';

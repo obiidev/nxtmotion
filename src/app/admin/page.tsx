@@ -1,13 +1,39 @@
 import AdminAuth from "@/components/admin/AdminAuth";
 import CatalogueManager from "@/components/admin/CatalogueManager";
+import NavBar from "@/components/NavBar";
 
 export default function AdminPage() {
   return (
+<main className="min-h-screen bg-[#050505] relative">
+  {/* Background layers - keep these */}
+  <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-black to-[#0a0a0a] opacity-80 z-0"></div>
+  <div className="absolute inset-0 opacity-5 mix-blend-overlay pointer-events-none z-0" 
+       style={{
+           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+           backgroundRepeat: 'repeat'
+       }}
+  ></div>
+  <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#333_0.5px,transparent_0.5px)] [background-size:20px_20px] pointer-events-none z-0"></div>
+  <div className="absolute inset-0 opacity-8 bg-[linear-gradient(45deg,#222_25%,transparent_25%,transparent_50%,#222_50%,#222_75%,transparent_75%,transparent)] bg-[length:10px_10px] mix-blend-overlay pointer-events-none z-0"></div>
+
+  {/* Floating elements */}
+  <div className="absolute top-1/4 left-1/6 w-64 h-64 bg-gradient-to-r from-[#e76e7b]/10 to-[#eec0a8]/10 opacity-30 rounded-full blur-3xl pointer-events-none z-0"></div>
+  <div className="absolute bottom-1/3 right-1/5 w-80 h-80 bg-gradient-to-r from-[#eec0a8]/10 to-[#e76e7b]/10 opacity-20 rounded-full blur-3xl pointer-events-none z-0"></div>
+
+  {/* Actual visible content - set z-index above backgrounds */}
+  <div className="relative z-10">
+    <header>
+      <NavBar />
+    </header>
+
     <AdminAuth>
-      <div className="p-8">
+      <div className="p-8 mt-12">
         <h1 className="text-3xl font-bold mb-6 text-white">Admin Panel</h1>
         <CatalogueManager />
       </div>
     </AdminAuth>
+  </div>
+</main>
+
   );
 }
