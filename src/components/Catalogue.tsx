@@ -99,15 +99,77 @@ export default function Catalogue() {
         </span>
       </button>
 
-      {showFilter && (
-        <section className="mb-12 p-6 bg-[#111] rounded-lg shadow-lg">
-          <h2 className="text-2xl mb-4 font-semibold">Filter auto's</h2>
-          <form className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {/* Filter inputs stay the same */}
-            {/* ... */}
-          </form>
-        </section>
-      )}
+        {/* Filters-paneel */}
+        {showFilter && (
+          <section className="mb-12 p-6 bg-[#111] rounded-lg shadow-lg">
+            <h2 className="text-2xl mb-4 font-semibold">Filter auto's</h2>
+            <form className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              
+              {/*Dynamically fill from cars.ts*/}
+              <select id="make" onChange={handleChange} className="rounded bg-[#222] p-2">
+                <option value="">Merk</option>
+                {[...new Set(allCars.map((car) => car.make))].map((brand) => (
+                  <option key={brand} value={brand}>
+                    {brand}
+                  </option>
+                ))}
+              </select>
+              
+              {/*Dynamically fill from cars.ts*/}
+              <select id="year" onChange={handleChange} className="rounded bg-[#222] p-2">
+                <option value="">Bouwjaar</option>
+                {Array.from(
+                  { length: Math.max(...allCars.map(car => car.year)) - Math.min(...allCars.map(car => car.year)) + 1 },
+                  (_, i) => {
+                    const year = Math.min(...allCars.map(car => car.year)) + i;
+                    return (
+                      <option key={year} value={year}>
+                        Vanaf {year}
+                      </option>
+                    );
+                  }
+                ).reverse()}
+              </select>
+
+
+              {/*Dynamically fill from cars.ts*/}
+              <select
+                id="priceRange"
+                onChange={handleChange}
+                className="rounded bg-[#222] p-2"
+                defaultValue=""
+              >
+                <option value="">Prijs</option>
+                {priceOptions.map((price) => (
+                  <option key={price} value={price}>
+                    {`tot €${(price / 1000).toFixed(0)}.000,-`}
+                  </option>
+                ))}
+              </select>
+
+
+
+              {/*Dynamically fill from cars.ts*/}
+              <select id="fuel" onChange={handleChange} className="rounded bg-[#222] p-2">
+                <option value="">Brandstof</option>
+                {[...new Set(allCars.map(car => car.fuel))].map((fuel) => (
+                  <option key={fuel} value={fuel}>
+                    {fuel.charAt(0).toUpperCase() + fuel.slice(1)} {/* Capitalize */}
+                  </option>
+                ))}
+              </select>
+
+              <input id="mileage" type="number" placeholder="Max. kilometerstand" onChange={handleChange} className="rounded bg-[#222] p-2" />
+              
+              
+              <select id="transmission" onChange={handleChange} className="rounded bg-[#222] p-2">
+                <option value="">Transmissie</option>
+                <option value="manual">Handgeschakeld</option>
+                <option value="automatic">Automaat</option>
+              </select>
+            </form>
+          </section>
+        )}
 
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {filterCars.length === 0 ? (
@@ -128,7 +190,7 @@ export default function Catalogue() {
               />
               <div className="p-4">
                 <h3 className="text-xl font-semibold">{car.title}</h3>
-                <p className="text-sm text-gray-400">{car.description}</p>
+                <p className="text-sm text-gray-400">{car.catch}</p>
                 <p className="mt-2 text-sm">
                   <span className="block">Bouwjaar: {car.year}</span>
                   <span className="block">Brandstof: {car.fuel}</span>
@@ -168,7 +230,11 @@ export default function Catalogue() {
               className="w-full h-64 object-cover rounded mb-4"
             />
             <h2 className="text-3xl font-bold">{selectedCar.title}</h2>
-            <p className="text-gray-400 mt-2">{selectedCar.description}</p>
+            <p className="text-sm text-gray-400">{selectedCar.catch}</p>
+            
+            <h3 className="text-xl font-semibold mt-6 mb-2 text-white">Omschrijving</h3>
+            <p className="text-gray-300 leading-relaxed">{selectedCar.description}</p>
+            
             <ul className="mt-4 space-y-1 text-sm">
               <li>Bouwjaar: {selectedCar.year}</li>
               <li>Brandstof: {selectedCar.fuel}</li>
@@ -181,6 +247,7 @@ export default function Catalogue() {
           </div>
         </div>
       )}
+
     </div>
   );
 }
