@@ -76,7 +76,7 @@ export default function Catalogue() {
   const [mainImage, setMainImage] = useState<string>("");
   const handleCardClick = (car: any) => {
     setSelectedCar(car);
-    setMainImage(car.image); // default main image when modal opens
+    setMainImage(car.cover_image); // default main image when modal opens
   };
 
   const handleCloseModal = () => {
@@ -217,7 +217,7 @@ export default function Catalogue() {
               className="bg-[#111] rounded-lg shadow-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-300"
             >
               <img
-                src={car.image}
+                src={car.cover_image}
                 alt={car.title}
                 className="w-full h-48 object-cover"
               />
@@ -272,8 +272,8 @@ export default function Catalogue() {
               {/* Right side: Thumbnails */}
               <div className="flex flex-col gap-4 overflow-y-auto max-h-[400px] w-24">
                 {[
-                  selectedCar.image,
-                  ...(selectedCar.additionalImages || []),
+                  selectedCar.cover_image,
+                  ...(selectedCar.additional_images || []),
                 ].map((img: string, index: number) => (
                   <img
                     key={index}
