@@ -5,9 +5,10 @@ import { useEffect, useState, ChangeEvent, FormEvent } from "react";
 interface Car {
   id: number;
   title: string;
-  catch: string; // <-- new field
+  catch: string;
   description: string;
-  image: string;
+  cover_image: string;
+  additional_images?: string[];
   make: string;
   year: number;
   fuel: string;
@@ -15,7 +16,6 @@ interface Car {
   transmission: string;
   price: number;
 }
-
 
 export default function CatalogueManager() {
   const [cars, setCars] = useState<Car[]>([]);
@@ -28,7 +28,8 @@ export default function CatalogueManager() {
     title: "",
     catch: "",
     description: "",
-    image: null as File | null,
+    cover_image: null as File | null,
+    additional_images: [] as File[],
     make: "",
     year: "",
     fuel: "",
@@ -36,6 +37,7 @@ export default function CatalogueManager() {
     transmission: "",
     price: "",
   });
+
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -50,9 +52,7 @@ export default function CatalogueManager() {
           "x-api-key": API_KEY,
         },
       });
-      if (!res.ok) {
-        throw new Error(`API error: ${res.status}`);
-      }
+      if (!res.ok) throw new Error(`API error: ${res.status}`);
       const data = await res.json();
       setCars(data);
     } catch (err: any) {
@@ -75,46 +75,45 @@ export default function CatalogueManager() {
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files ? e.target.files[0] : null;
-    setFormState((prev) => ({ ...prev, image: file }));
+    setFormState((prev) => ({ ...prev, cover_image: file }));
   }
 
-function handleEditClick(car: Car) {
-  setEditingCarId(car.id);
-  setFormState({
-    title: car.title,
-    catch: car.catch, // <-- added
-    description: car.description, // description is now always empty
-    image: null,
-    make: car.make,
-    year: car.year.toString(),
-    fuel: car.fuel,
-    mileage: car.mileage.toString(),
-    transmission: car.transmission,
-    price: car.price.toString(),
-  });
-  setShowForm(true);
-}
+  function handleAdditionalImagesChange(e: ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    setFormState((prev) => ({ ...prev, additional_images: files }));
+  }
 
+  function handleEditClick(car: Car) {
+    setEditingCarId(car.id);
+    setFormState({
+      title: car.title,
+      catch: car.catch,
+      description: car.description,
+      cover_image: null,
+      additional_images: [],
+      make: car.make,
+      year: car.year.toString(),
+      fuel: car.fuel,
+      mileage: car.mileage.toString(),
+      transmission: car.transmission,
+      price: car.price.toString(),
+    });
+    setShowForm(true);
+  }
 
-  // Delete car by id
   async function handleDeleteClick(id: number) {
     if (!confirm("Are you sure you want to delete this car?")) return;
-
     try {
-      const res = await fetch(`/api/cars?id=${id}`, {  // <-- changed here
+      const res = await fetch(`/api/cars?id=${id}`, {
         method: "DELETE",
         headers: {
           "x-api-key": API_KEY,
         },
       });
-      if (!res.ok) {
-        const json = await res.json();
-        throw new Error(json.message || `Delete failed with status ${res.status}`);
-      }
-      // Refresh list after deletion
+      if (!res.ok) throw new Error("Failed to delete");
       fetchCars();
     } catch (err: any) {
-      alert(`Failed to delete car: ${err.message}`);
+      alert(err.message);
     }
   }
 
@@ -127,8 +126,7 @@ function handleEditClick(car: Car) {
       const formData = new FormData();
       formData.append("title", formState.title);
       formData.append("catch", formState.catch);
-      formData.append("description", formState.description); // intentionally empty
-      if (formState.image) formData.append("image", formState.image);
+      formData.append("description", formState.description);
       formData.append("make", formState.make);
       formData.append("year", formState.year);
       formData.append("fuel", formState.fuel);
@@ -136,42 +134,35 @@ function handleEditClick(car: Car) {
       formData.append("transmission", formState.transmission);
       formData.append("price", formState.price);
 
-      let res;
-      if (editingCarId) {
-        // Include id in formData for PUT (your API expects id inside body)
-        formData.append("id", editingCarId.toString());
+      if (formState.cover_image) {
+        formData.append("cover_image", formState.cover_image);
+      }
 
-        // Update existing car (PUT)
-        res = await fetch(`/api/cars`, {   // <-- changed here (no id in URL)
+      formState.additional_images.forEach((file, i) =>
+        formData.append(`additional_images`, file)
+      );
+
+      if (editingCarId) {
+        formData.append("id", editingCarId.toString());
+        await fetch(`/api/cars`, {
           method: "PUT",
-          headers: {
-            "x-api-key": API_KEY,
-            // DO NOT set Content-Type manually when sending FormData
-          },
+          headers: { "x-api-key": API_KEY },
           body: formData,
         });
       } else {
-        // Add new car (POST)
-        res = await fetch("/api/cars", {
+        await fetch(`/api/cars`, {
           method: "POST",
-          headers: {
-            "x-api-key": API_KEY,
-            // DO NOT set Content-Type manually when sending FormData
-          },
+          headers: { "x-api-key": API_KEY },
           body: formData,
         });
-      }
-
-      if (!res.ok) {
-        const json = await res.json();
-        throw new Error(json.message || `Error: ${res.status}`);
       }
 
       setFormState({
         title: "",
         catch: "",
         description: "",
-        image: null,
+        cover_image: null,
+        additional_images: [],
         make: "",
         year: "",
         fuel: "",
@@ -179,11 +170,12 @@ function handleEditClick(car: Car) {
         transmission: "",
         price: "",
       });
+
       setEditingCarId(null);
       setShowForm(false);
       fetchCars();
     } catch (err: any) {
-      setSubmitError(err.message || "Failed to submit car");
+      setSubmitError(err.message);
     } finally {
       setSubmitting(false);
     }
@@ -205,7 +197,8 @@ function handleEditClick(car: Car) {
               title: "",
               catch: "",
               description: "",
-              image: null,
+              cover_image: null,
+              additional_images: [],
               make: "",
               year: "",
               fuel: "",
@@ -214,77 +207,68 @@ function handleEditClick(car: Car) {
               price: "",
             });
           }}
-          aria-label="Add new car"
         >
           + Add Car
         </button>
       </div>
 
-      {/* Modal for Add/Edit Car */}
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-start pt-20 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-start pt-20 z-50 overflow-auto">
           <form
             onSubmit={handleSubmit}
-            className="bg-gray-900 p-6 rounded shadow max-w-lg w-full text-white space-y-4"
+            className="bg-gray-900 p-6 rounded shadow max-w-lg w-full text-white space-y-4 mb-20"
           >
             <h3 className="text-xl font-semibold mb-2">
               {editingCarId ? "Edit Car" : "Add New Car"}
             </h3>
-
             <input
-              required
               name="title"
               value={formState.title}
               onChange={handleInputChange}
+              required
               placeholder="Title"
               className="w-full p-2 rounded bg-gray-800"
             />
             <textarea
               name="catch"
-              value={(formState as any).catch || ""}
-              onChange={(e) =>
-                setFormState((prev) => ({ ...prev, catch: e.target.value }))
-              }
-              placeholder="Short catch / summary"
-              rows={3}
+              value={formState.catch}
+              onChange={handleInputChange}
+              placeholder="Catch"
               className="w-full p-2 rounded bg-gray-800"
             />
             <textarea
               name="description"
-              value={(formState as any).description || ""}
-              onChange={(e) =>
-                setFormState((prev) => ({ ...prev, description: e.target.value }))
-              }
-              placeholder="car origin / additional information"
-              rows={3}
+              value={formState.description}
+              onChange={handleInputChange}
+              placeholder="Description"
               className="w-full p-2 rounded bg-gray-800"
             />
             <select
-              required
               name="make"
               value={formState.make}
               onChange={handleInputChange}
+              required
               className="w-full p-2 rounded bg-gray-800"
             >
               <option value="">Select Make</option>
               <option value="Volkswagen">Volkswagen</option>
-              <option value="Mercedes-Benz">Mercedes-Benz</option>
               <option value="BMW">BMW</option>
+              <option value="Mercedes-Benz">Mercedes-Benz</option>
             </select>
             <input
-              required
               type="number"
               name="year"
               value={formState.year}
               onChange={handleInputChange}
               placeholder="Year"
+              required
               className="w-full p-2 rounded bg-gray-800"
             />
             <select
-              required
               name="fuel"
               value={formState.fuel}
               onChange={handleInputChange}
+              required
               className="w-full p-2 rounded bg-gray-800 capitalize"
             >
               <option value="">Select Fuel</option>
@@ -294,105 +278,97 @@ function handleEditClick(car: Car) {
               <option value="hybrid">Hybrid</option>
             </select>
             <input
-              required
               type="number"
               name="mileage"
               value={formState.mileage}
               onChange={handleInputChange}
-              placeholder="Mileage (km)"
+              placeholder="Mileage"
+              required
               className="w-full p-2 rounded bg-gray-800"
             />
             <select
-              required
               name="transmission"
               value={formState.transmission}
               onChange={handleInputChange}
+              required
               className="w-full p-2 rounded bg-gray-800"
             >
               <option value="">Select Transmission</option>
               <option value="automatic">Automatic</option>
               <option value="manual">Manual</option>
             </select>
+
             <input
-              // image is required only if adding new car, optional if editing
-              required={!editingCarId}
+              type="number"
+              name="price"
+              value={formState.price}
+              onChange={handleInputChange}
+              placeholder="Price"
+              required
+              className="w-full p-2 rounded bg-gray-800"
+            />
+
+            <input
               type="file"
-              name="image"
               accept="image/*"
               onChange={handleFileChange}
-              className="w-full text-white"
+              required={!editingCarId}
+              className="text-white"
+            />
+
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleAdditionalImagesChange}
+              className="text-white"
             />
 
             {submitError && <p className="text-red-500">{submitError}</p>}
 
-            <div className="flex justify-end space-x-3 mt-4">
+            <div className="flex justify-end space-x-2">
               <button
                 type="button"
                 onClick={() => {
                   setShowForm(false);
                   setEditingCarId(null);
-                  setSubmitError(null);
                 }}
-                className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md"
-                disabled={submitting}
+                className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-rose-500 text-white rounded hover:bg-rose-600"
                 disabled={submitting}
+                className="bg-rose-500 hover:bg-rose-600 px-4 py-2 rounded"
               >
                 {submitting
                   ? editingCarId
                     ? "Updating..."
                     : "Adding..."
                   : editingCarId
-                  ? "Update Car"
-                  : "Add Car"}
+                  ? "Update"
+                  : "Add"}
               </button>
             </div>
           </form>
         </div>
       )}
 
-      {/* Cars Table */}
       <table className="w-full text-sm text-left text-gray-300">
         <thead className="text-xs uppercase text-gray-400 border-b border-gray-600">
           <tr>
-            <th scope="col" className="px-4 py-3">
-              Afbeelding
-            </th>
-            <th scope="col" className="px-4 py-3">
-              Titel
-            </th>
-            <th scope="col" className="px-4 py-3">
-              Catch
-            </th>
-            <th scope="col" className="px-4 py-3">
-              Description
-            </th>
-            <th scope="col" className="px-4 py-3">
-              Merk
-            </th>
-            <th scope="col" className="px-4 py-3">
-              Bouwjaar
-            </th>
-            <th scope="col" className="px-4 py-3">
-              Brandstof
-            </th>
-            <th scope="col" className="px-4 py-3">
-              KM
-            </th>
-            <th scope="col" className="px-4 py-3">
-              Transmissie
-            </th>
-            <th scope="col" className="px-4 py-3">
-              Prijs
-            </th>
-            <th scope="col" className="px-4 py-3">
-              Actions
-            </th>
+            <th className="px-4 py-3">Image</th>
+            <th className="px-4 py-3">Title</th>
+            <th className="px-4 py-3">Catch</th>
+            <th className="px-4 py-3">Description</th>
+            <th className="px-4 py-3">Make</th>
+            <th className="px-4 py-3">Year</th>
+            <th className="px-4 py-3">Fuel</th>
+            <th className="px-4 py-3">Mileage</th>
+            <th className="px-4 py-3">Transmission</th>
+            <th className="px-4 py-3">Price</th>
+            <th className="px-4 py-3">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -403,7 +379,7 @@ function handleEditClick(car: Car) {
             >
               <td className="px-4 py-2">
                 <img
-                  src={car.image}
+                  src={car.cover_image}
                   alt={car.title}
                   className="w-20 h-auto rounded"
                 />
@@ -418,21 +394,15 @@ function handleEditClick(car: Car) {
               <td className="px-4 py-2">{car.transmission}</td>
               <td className="px-4 py-2">€{car.price.toLocaleString()}</td>
               <td className="px-4 py-2 space-x-2">
-                {/* Edit (pencil) button */}
                 <button
                   onClick={() => handleEditClick(car)}
-                  aria-label={`Edit ${car.title}`}
                   className="text-blue-400 hover:text-blue-600"
-                  title="Edit"
                 >
                   ✏️
                 </button>
-                {/* Delete (trash bin) button */}
                 <button
                   onClick={() => handleDeleteClick(car.id)}
-                  aria-label={`Delete ${car.title}`}
                   className="text-red-500 hover:text-red-700"
-                  title="Delete"
                 >
                   🗑️
                 </button>
