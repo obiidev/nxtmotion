@@ -28,7 +28,11 @@ export default function Catalogue() {
   const increment = 5000;
   const priceOptions = [];
 
-  for (let price = increment; price <= roundedMax + increment; price += increment) {
+  for (
+    let price = increment;
+    price <= roundedMax + increment;
+    price += increment
+  ) {
     if (price >= roundedMin) {
       priceOptions.push(price);
     }
@@ -69,8 +73,10 @@ export default function Catalogue() {
     );
   });
 
+  const [mainImage, setMainImage] = useState<string>("");
   const handleCardClick = (car: any) => {
     setSelectedCar(car);
+    setMainImage(car.image); // default main image when modal opens
   };
 
   const handleCloseModal = () => {
@@ -94,82 +100,109 @@ export default function Catalogue() {
             strokeWidth="2"
             viewBox="0 0 24 24"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </span>
       </button>
 
-        {/* Filters-paneel */}
-        {showFilter && (
-          <section className="mb-12 p-6 bg-[#111] rounded-lg shadow-lg">
-            <h2 className="text-2xl mb-4 font-semibold">Filter auto's</h2>
-            <form className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              
-              {/*Dynamically fill from cars.ts*/}
-              <select id="make" onChange={handleChange} className="rounded bg-[#222] p-2">
-                <option value="">Merk</option>
-                {[...new Set(allCars.map((car) => car.make))].map((brand) => (
-                  <option key={brand} value={brand}>
-                    {brand}
-                  </option>
-                ))}
-              </select>
-              
-              {/*Dynamically fill from cars.ts*/}
-              <select id="year" onChange={handleChange} className="rounded bg-[#222] p-2">
-                <option value="">Bouwjaar</option>
-                {Array.from(
-                  { length: Math.max(...allCars.map(car => car.year)) - Math.min(...allCars.map(car => car.year)) + 1 },
-                  (_, i) => {
-                    const year = Math.min(...allCars.map(car => car.year)) + i;
-                    return (
-                      <option key={year} value={year}>
-                        Vanaf {year}
-                      </option>
-                    );
-                  }
-                ).reverse()}
-              </select>
+      {/* Filters-paneel */}
+      {showFilter && (
+        <section className="mb-12 p-6 bg-[#111] rounded-lg shadow-lg">
+          <h2 className="text-2xl mb-4 font-semibold">Filter auto's</h2>
+          <form className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {/*Dynamically fill from cars.ts*/}
+            <select
+              id="make"
+              onChange={handleChange}
+              className="rounded bg-[#222] p-2"
+            >
+              <option value="">Merk</option>
+              {[...new Set(allCars.map((car) => car.make))].map((brand) => (
+                <option key={brand} value={brand}>
+                  {brand}
+                </option>
+              ))}
+            </select>
 
+            {/*Dynamically fill from cars.ts*/}
+            <select
+              id="year"
+              onChange={handleChange}
+              className="rounded bg-[#222] p-2"
+            >
+              <option value="">Bouwjaar</option>
+              {Array.from(
+                {
+                  length:
+                    Math.max(...allCars.map((car) => car.year)) -
+                    Math.min(...allCars.map((car) => car.year)) +
+                    1,
+                },
+                (_, i) => {
+                  const year = Math.min(...allCars.map((car) => car.year)) + i;
+                  return (
+                    <option key={year} value={year}>
+                      Vanaf {year}
+                    </option>
+                  );
+                }
+              ).reverse()}
+            </select>
 
-              {/*Dynamically fill from cars.ts*/}
-              <select
-                id="priceRange"
-                onChange={handleChange}
-                className="rounded bg-[#222] p-2"
-                defaultValue=""
-              >
-                <option value="">Prijs</option>
-                {priceOptions.map((price) => (
-                  <option key={price} value={price}>
-                    {`tot €${(price / 1000).toFixed(0)}.000,-`}
-                  </option>
-                ))}
-              </select>
+            {/*Dynamically fill from cars.ts*/}
+            <select
+              id="priceRange"
+              onChange={handleChange}
+              className="rounded bg-[#222] p-2"
+              defaultValue=""
+            >
+              <option value="">Prijs</option>
+              {priceOptions.map((price) => (
+                <option key={price} value={price}>
+                  {`tot €${(price / 1000).toFixed(0)}.000,-`}
+                </option>
+              ))}
+            </select>
 
+            {/*Dynamically fill from cars.ts*/}
+            <select
+              id="fuel"
+              onChange={handleChange}
+              className="rounded bg-[#222] p-2"
+            >
+              <option value="">Brandstof</option>
+              {[...new Set(allCars.map((car) => car.fuel))].map((fuel) => (
+                <option key={fuel} value={fuel}>
+                  {fuel.charAt(0).toUpperCase() + fuel.slice(1)}{" "}
+                  {/* Capitalize */}
+                </option>
+              ))}
+            </select>
 
+            <input
+              id="mileage"
+              type="number"
+              placeholder="Max. kilometerstand"
+              onChange={handleChange}
+              className="rounded bg-[#222] p-2"
+            />
 
-              {/*Dynamically fill from cars.ts*/}
-              <select id="fuel" onChange={handleChange} className="rounded bg-[#222] p-2">
-                <option value="">Brandstof</option>
-                {[...new Set(allCars.map(car => car.fuel))].map((fuel) => (
-                  <option key={fuel} value={fuel}>
-                    {fuel.charAt(0).toUpperCase() + fuel.slice(1)} {/* Capitalize */}
-                  </option>
-                ))}
-              </select>
-
-              <input id="mileage" type="number" placeholder="Max. kilometerstand" onChange={handleChange} className="rounded bg-[#222] p-2" />
-              
-              
-              <select id="transmission" onChange={handleChange} className="rounded bg-[#222] p-2">
-                <option value="">Transmissie</option>
-                <option value="manual">Handgeschakeld</option>
-                <option value="automatic">Automaat</option>
-              </select>
-            </form>
-          </section>
-        )}
+            <select
+              id="transmission"
+              onChange={handleChange}
+              className="rounded bg-[#222] p-2"
+            >
+              <option value="">Transmissie</option>
+              <option value="manual">Handgeschakeld</option>
+              <option value="automatic">Automaat</option>
+            </select>
+          </form>
+        </section>
+      )}
 
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {filterCars.length === 0 ? (
@@ -208,14 +241,14 @@ export default function Catalogue() {
         )}
       </section>
 
-      {/* Modal for selected car */}
+      {/*Detailed Cards*/}
       {selectedCar && (
         <div
           className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center"
           onClick={handleCloseModal}
         >
           <div
-            className="bg-[#111] max-w-2xl w-full mx-4 rounded-lg shadow-2xl p-6 relative"
+            className="bg-[#111] max-w-5xl w-full max-h-[90vh] overflow-y-auto mx-4 rounded-lg shadow-2xl p-6 relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -224,17 +257,50 @@ export default function Catalogue() {
             >
               &times;
             </button>
-            <img
-              src={selectedCar.image}
-              alt={selectedCar.title}
-              className="w-full h-64 object-cover rounded mb-4"
-            />
+
+            {/* Images container */}
+            <div className="flex gap-6 mb-6">
+              {/* Left side: Main image */}
+              <div className="flex-1">
+                <img
+                  src={mainImage}
+                  alt={selectedCar.title}
+                  className="w-full h-[400px] object-cover rounded"
+                />
+              </div>
+
+              {/* Right side: Thumbnails */}
+              <div className="flex flex-col gap-4 overflow-y-auto max-h-[400px] w-24">
+                {[
+                  selectedCar.image,
+                  ...(selectedCar.additionalImages || []),
+                ].map((img: string, index: number) => (
+                  <img
+                    key={index}
+                    src={img}
+                    alt={`${selectedCar.title} thumbnail ${index + 1}`}
+                    className={`w-full h-20 object-cover rounded cursor-pointer border-2 ${
+                      mainImage === img
+                        ? "border-[#e76e7b]"
+                        : "border-transparent"
+                    }`}
+                    onClick={() => setMainImage(img)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Details section */}
             <h2 className="text-3xl font-bold">{selectedCar.title}</h2>
             <p className="text-sm text-gray-400">{selectedCar.catch}</p>
-            
-            <h3 className="text-xl font-semibold mt-6 mb-2 text-white">Omschrijving</h3>
-            <p className="text-gray-300 leading-relaxed">{selectedCar.description}</p>
-            
+
+            <h3 className="text-xl font-semibold mt-6 mb-2 text-white">
+              Omschrijving
+            </h3>
+            <p className="text-gray-300 leading-relaxed">
+              {selectedCar.description}
+            </p>
+
             <ul className="mt-4 space-y-1 text-sm">
               <li>Bouwjaar: {selectedCar.year}</li>
               <li>Brandstof: {selectedCar.fuel}</li>
@@ -247,7 +313,6 @@ export default function Catalogue() {
           </div>
         </div>
       )}
-
     </div>
   );
 }
