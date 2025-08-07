@@ -13,6 +13,7 @@
     "@heroicons/react": "^2.2.0",
     "autoprefixer": "^10.4.16",
     "formidable": "^3.5.4",
+    "framer-motion": "^12.23.12",
     "hamburger-react": "^2.5.2",
     "next": "15.2.4",
     "next-auth": "^4.24.11",
