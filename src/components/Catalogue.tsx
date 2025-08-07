@@ -5,6 +5,7 @@ import allCars from "@/data/cars.json";
 
 export default function Catalogue() {
   const [showFilter, setShowFilter] = useState(false);
+  const [selectedCar, setSelectedCar] = useState<any>(null);
   const [filters, setFilters] = useState({
     make: "",
     year: "",
@@ -72,6 +73,16 @@ export default function Catalogue() {
     );
   });
 
+  const [mainImage, setMainImage] = useState<string>("");
+  const handleCardClick = (car: any) => {
+    setSelectedCar(car);
+    setMainImage(car.image); // default main image when modal opens
+  };
+
+  const handleCloseModal = () => {
+    setSelectedCar(null);
+  };
+
   return (
     <div className="relative max-w-7xl mx-auto px-8 sm:px-16 py-12 pt-24">
       <h1 className="text-4xl font-bold mb-8 text-center">Catalogus</h1>
@@ -89,15 +100,21 @@ export default function Catalogue() {
             strokeWidth="2"
             viewBox="0 0 24 24"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </span>
       </button>
 
+      {/* Filters-paneel */}
       {showFilter && (
         <section className="mb-12 p-6 bg-[#111] rounded-lg shadow-lg">
           <h2 className="text-2xl mb-4 font-semibold">Filter auto's</h2>
           <form className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {/*Dynamically fill from cars.ts*/}
             <select
               id="make"
               onChange={handleChange}
@@ -111,6 +128,7 @@ export default function Catalogue() {
               ))}
             </select>
 
+            {/*Dynamically fill from cars.ts*/}
             <select
               id="year"
               onChange={handleChange}
@@ -135,6 +153,7 @@ export default function Catalogue() {
               ).reverse()}
             </select>
 
+            {/*Dynamically fill from cars.ts*/}
             <select
               id="priceRange"
               onChange={handleChange}
@@ -149,6 +168,7 @@ export default function Catalogue() {
               ))}
             </select>
 
+            {/*Dynamically fill from cars.ts*/}
             <select
               id="fuel"
               onChange={handleChange}
@@ -157,7 +177,8 @@ export default function Catalogue() {
               <option value="">Brandstof</option>
               {[...new Set(allCars.map((car) => car.fuel))].map((fuel) => (
                 <option key={fuel} value={fuel}>
-                  {fuel.charAt(0).toUpperCase() + fuel.slice(1)}
+                  {fuel.charAt(0).toUpperCase() + fuel.slice(1)}{" "}
+                  {/* Capitalize */}
                 </option>
               ))}
             </select>
@@ -192,7 +213,8 @@ export default function Catalogue() {
           filterCars.map((car) => (
             <article
               key={car.id}
-              className="bg-[#111] rounded-lg shadow-lg overflow-hidden"
+              onClick={() => handleCardClick(car)}
+              className="bg-[#111] rounded-lg shadow-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-300"
             >
               <img
                 src={car.image}
@@ -201,7 +223,7 @@ export default function Catalogue() {
               />
               <div className="p-4">
                 <h3 className="text-xl font-semibold">{car.title}</h3>
-                <p className="text-sm text-gray-400">{car.description}</p>
+                <p className="text-sm text-gray-400">{car.catch}</p>
                 <p className="mt-2 text-sm">
                   <span className="block">Bouwjaar: {car.year}</span>
                   <span className="block">Brandstof: {car.fuel}</span>
@@ -218,6 +240,79 @@ export default function Catalogue() {
           ))
         )}
       </section>
+
+      {/*Detailed Cards*/}
+      {selectedCar && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center"
+          onClick={handleCloseModal}
+        >
+          <div
+            className="bg-[#111] max-w-5xl w-full max-h-[90vh] overflow-y-auto mx-4 rounded-lg shadow-2xl p-6 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={handleCloseModal}
+              className="absolute top-4 right-4 text-white text-2xl"
+            >
+              &times;
+            </button>
+
+            {/* Images container */}
+            <div className="flex gap-6 mb-6">
+              {/* Left side: Main image */}
+              <div className="flex-1">
+                <img
+                  src={mainImage}
+                  alt={selectedCar.title}
+                  className="w-full h-[400px] object-cover rounded"
+                />
+              </div>
+
+              {/* Right side: Thumbnails */}
+              <div className="flex flex-col gap-4 overflow-y-auto max-h-[400px] w-24">
+                {[
+                  selectedCar.image,
+                  ...(selectedCar.additionalImages || []),
+                ].map((img: string, index: number) => (
+                  <img
+                    key={index}
+                    src={img}
+                    alt={`${selectedCar.title} thumbnail ${index + 1}`}
+                    className={`w-full h-20 object-cover rounded cursor-pointer border-2 ${
+                      mainImage === img
+                        ? "border-[#e76e7b]"
+                        : "border-transparent"
+                    }`}
+                    onClick={() => setMainImage(img)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Details section */}
+            <h2 className="text-3xl font-bold">{selectedCar.title}</h2>
+            <p className="text-sm text-gray-400">{selectedCar.catch}</p>
+
+            <h3 className="text-xl font-semibold mt-6 mb-2 text-white">
+              Omschrijving
+            </h3>
+            <p className="text-gray-300 leading-relaxed">
+              {selectedCar.description}
+            </p>
+
+            <ul className="mt-4 space-y-1 text-sm">
+              <li>Bouwjaar: {selectedCar.year}</li>
+              <li>Brandstof: {selectedCar.fuel}</li>
+              <li>Kilometerstand: {selectedCar.mileage} km</li>
+              <li>Transmissie: {selectedCar.transmission}</li>
+              <li className="font-semibold text-lg mt-2">
+                Prijs: €{selectedCar.price.toLocaleString()}
+              </li>
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

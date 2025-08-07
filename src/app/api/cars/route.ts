@@ -10,19 +10,17 @@ function validateApiKey(request: Request) {
   return apiKey === API_KEY;
 }
 
-// Helper to add CORS headers
 function corsResponse(body: any, status = 200) {
   return NextResponse.json(body, {
     status,
     headers: {
-      "Access-Control-Allow-Origin": "*", // Or restrict to your domain
+      "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type, x-api-key",
     },
   });
 }
 
-// Handle preflight OPTIONS request
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 204,
@@ -62,7 +60,7 @@ export async function POST(request: Request) {
       const file = formData.get("image") as File;
 
       const title = formData.get("title") as string;
-      const description = formData.get("description") as string;
+      const catchPhrase = formData.get("catch") as string;
       const make = formData.get("make") as string;
       const year = Number(formData.get("year"));
       const fuel = formData.get("fuel") as string;
@@ -87,38 +85,43 @@ export async function POST(request: Request) {
         imagePath = `/images/cars/${fileName}`;
       }
 
-      newCar = {
-        title,
-        description,
-        image: imagePath,
-        make,
-        year,
-        fuel,
-        mileage,
-        transmission,
-        price,
-      };
-    } else {
-      // fallback: accept raw JSON body
-      newCar = await request.json();
+const description = formData.get("description") as string || "";
+
+  newCar = {
+    title,
+    catch: catchPhrase,
+    description,    // <-- Use provided description
+    image: imagePath,
+    make,
+    year,
+    fuel,
+    mileage,
+    transmission,
+    price,
+  };
+} else {
+  const body = await request.json();
+  newCar = {
+    ...body,
+    // description: body.description || "", // optional fallback
+  };
     }
 
     const data = await fs.readFile(filePath, "utf-8");
     const cars = JSON.parse(data);
-
     const newId = cars.length ? Math.max(...cars.map((car: any) => car.id)) + 1 : 1;
+
     newCar.id = newId;
 
     cars.push(newCar);
-
     await fs.writeFile(filePath, JSON.stringify(cars, null, 2), "utf-8");
+
     return corsResponse(newCar, 201);
   } catch (error) {
     console.error(error);
     return corsResponse({ message: "Failed to add car" }, 500);
   }
 }
-
 
 export async function PUT(request: Request) {
   if (!validateApiKey(request)) {
@@ -134,9 +137,9 @@ export async function PUT(request: Request) {
       const formData = await request.formData();
       const file = formData.get("image") as File;
 
-      // Extract fields from formData
       const id = Number(formData.get("id"));
       const title = formData.get("title") as string;
+      const catchPhrase = formData.get("catch") as string;
       const description = formData.get("description") as string;
       const make = formData.get("make") as string;
       const year = Number(formData.get("year"));
@@ -165,8 +168,9 @@ export async function PUT(request: Request) {
       updatedCar = {
         id,
         title,
-        description,
-        image: imagePath || "", // if no new image uploaded, maybe keep old image? handle this later
+        catch: catchPhrase,
+        description: description, // Set to empty
+        image: imagePath || "", // fallback handled below
         make,
         year,
         fuel,
@@ -175,8 +179,11 @@ export async function PUT(request: Request) {
         price,
       };
     } else {
-      // fallback: accept raw JSON body
-      updatedCar = await request.json();
+      const body = await request.json();
+      updatedCar = {
+        ...body,
+        description: "", // Force empty description
+      };
     }
 
     const data = await fs.readFile(filePath, "utf-8");
@@ -187,7 +194,7 @@ export async function PUT(request: Request) {
       return corsResponse({ message: "Car not found" }, 404);
     }
 
-    // If no new image uploaded, keep old image path:
+    // Keep old image if not updated
     if (!updatedCar.image) {
       updatedCar.image = cars[index].image;
     }
@@ -201,7 +208,6 @@ export async function PUT(request: Request) {
     return corsResponse({ message: "Failed to update car" }, 500);
   }
 }
-
 
 export async function DELETE(request: Request) {
   if (!validateApiKey(request)) {
