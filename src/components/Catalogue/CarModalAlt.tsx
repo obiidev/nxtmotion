@@ -153,54 +153,70 @@ export default function CarModal({
         </button>
 
         {/* MOBILE layout */}
+        {/* MOBILE layout */}
         {isMobile ? (
-          <div className="w-full">
-            <div {...handlers} className="w-full select-none">
+          <div className="w-full relative overflow-visible">
+            <div
+              {...handlers}
+              className="w-full select-none relative overflow-visible"
+              style={{ paddingLeft: 24, paddingRight: 24 }} // enough padding to show arrows outside img
+            >
+              {/* Left Arrow */}
+              {currentIndex > 0 && (
+                <button
+                  onClick={() => handleSwipe("right")}
+                  aria-label="Previous image"
+                  className="absolute top-1/2 left-0 transform -translate-y-1/2
+             bg-transparent border-0 cursor-pointer z-20"
+                  style={{
+                    width: 0,
+                    height: 0,
+                    borderTop: "20px solid transparent",
+                    borderBottom: "20px solid transparent",
+                    borderRight: "20px solid white",
+                  }}
+                />
+              )}
+
+              {/* Image */}
               <img
                 src={mainImage}
                 alt={`${car.title} image ${currentIndex + 1}`}
-                className="w-full h-[300px] object-cover"
+                className="w-full h-[300px] object-cover cursor-pointer"
+                onClick={() => openImageFullscreen(mainImage)}
               />
-              <div className="flex justify-center mt-3 gap-2">
-                {images.map((_, i) => (
-                  <div
-                    key={i}
-                    className={`w-3 h-3 rounded-full transition-colors ${
-                      i === currentIndex ? "bg-white" : "bg-gray-500"
-                    }`}
-                  />
-                ))}
-              </div>
-              <p className="mt-2 text-white text-center text-sm">
-                {currentIndex + 1} / {images.length}
-              </p>
-            </div>
 
-            <div className="p-4 text-white">
-              <h2 className="text-3xl font-bold">{car.title}</h2>
-              <p className="text-sm text-gray-400">{car.catch}</p>
-
-              {car.description && (
-                <>
-                  <h3 className="text-xl font-semibold mt-6 mb-2">
-                    Omschrijving
-                  </h3>
-                  <p className="text-gray-300 leading-relaxed">
-                    {car.description}
-                  </p>
-                </>
+              {/* Right Arrow */}
+              {currentIndex < images.length - 1 && (
+                <button
+                  onClick={() => handleSwipe("left")}
+                  aria-label="Next image"
+                  className="absolute top-1/2 right-0 transform -translate-y-1/2
+             bg-transparent border-0 cursor-pointer z-20"
+                  style={{
+                    width: 0,
+                    height: 0,
+                    borderTop: "20px solid transparent",
+                    borderBottom: "20px solid transparent",
+                    borderLeft: "20px solid white",
+                  }}
+                />
               )}
-
-              <ul className="mt-4 space-y-1 text-sm">
-                <li>Bouwjaar: {car.year}</li>
-                <li>Brandstof: {car.fuel}</li>
-                <li>Kilometerstand: {car.mileage.toLocaleString()} km</li>
-                <li>Transmissie: {car.transmission}</li>
-                <li className="font-semibold text-lg mt-2">
-                  Prijs: €{car.price.toLocaleString()}
-                </li>
-              </ul>
             </div>
+
+            <div className="flex justify-center mt-3 gap-2">
+              {images.map((_, i) => (
+                <div
+                  key={i}
+                  className={`w-3 h-3 rounded-full transition-colors ${
+                    i === currentIndex ? "bg-white" : "bg-gray-500"
+                  }`}
+                />
+              ))}
+            </div>
+            <p className="mt-2 text-white text-center text-sm">
+              {currentIndex + 1} / {images.length}
+            </p>
           </div>
         ) : (
           <>
