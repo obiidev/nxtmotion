@@ -57,16 +57,25 @@ export default function CarModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4 overflow-auto"
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 overflow-auto
+        ${isMobile ? "bg-black" : "bg-black bg-opacity-70"}`}
       onClick={onClose}
     >
       <div
-        className="bg-[#111] max-w-5xl w-full max-h-[90vh] rounded-lg shadow-2xl p-6 pt-10 pr-10 relative flex flex-col md:flex-row gap-6"
+        className={`bg-[#111] relative flex flex-col md:flex-row gap-6 shadow-2xl
+          ${
+            isMobile
+              ? "w-full h-full m-0 rounded-none p-4 pt-12"
+              : "max-w-5xl w-full max-h-[90vh] rounded-lg p-6 pt-10 pr-10"
+          }`}
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-white text-3xl font-bold leading-none"
+          className={`text-white text-3xl font-bold leading-none
+            ${
+              isMobile ? "fixed top-4 right-4 z-50" : "absolute top-4 right-4"
+            }`}
           aria-label="Close modal"
         >
           &times;
@@ -121,8 +130,11 @@ export default function CarModal({
           </div>
         )}
 
-        {/* Details below on mobile, next to images on desktop */}
-        <div className="mt-6 md:mt-0 md:ml-6 flex-1 text-white overflow-auto">
+        {/* Details */}
+        <div
+          className={`text-white overflow-auto
+            ${isMobile ? "mt-6" : "mt-0 md:ml-6 flex-1"}`}
+        >
           <h2 className="text-3xl font-bold">{car.title}</h2>
           <p className="text-sm text-gray-400">{car.catch}</p>
 
