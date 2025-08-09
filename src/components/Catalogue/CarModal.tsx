@@ -37,14 +37,33 @@ export default function CarModal({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Prevent background scroll when modal is open
+  useEffect(() => {
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
+
   const currentIndex = images.indexOf(mainImage);
 
   // Swipe handlers for mobile
   const handleSwipe = (direction: "left" | "right") => {
-    if (direction === "left" && currentIndex < images.length - 1) {
-      setMainImage(images[currentIndex + 1]);
-    } else if (direction === "right" && currentIndex > 0) {
-      setMainImage(images[currentIndex - 1]);
+    if (direction === "left") {
+      // If on last image, go to first, else next image
+      setMainImage(
+        currentIndex === images.length - 1
+          ? images[0]
+          : images[currentIndex + 1]
+      );
+    } else if (direction === "right") {
+      // If on first image, go to last, else previous image
+      setMainImage(
+        currentIndex === 0
+          ? images[images.length - 1]
+          : images[currentIndex - 1]
+      );
     }
   };
 
@@ -55,7 +74,7 @@ export default function CarModal({
     trackMouse: true,
   });
 
-  // Add this function inside CarModal component
+  // Fullscreen image viewer
   const openImageFullscreen = (imgSrc: string) => {
     const imgElement = document.createElement("img");
     imgElement.src = imgSrc;
@@ -71,10 +90,10 @@ export default function CarModal({
     wrapper.style.alignItems = "center";
     wrapper.style.justifyContent = "center";
     wrapper.style.background = "black";
-    wrapper.style.position = "relative"; // for close button positioning
+    wrapper.style.position = "relative";
     wrapper.appendChild(imgElement);
 
-    // Create close button
+    // Close button
     const closeButton = document.createElement("button");
     closeButton.innerHTML = "&times;";
     closeButton.style.position = "absolute";
@@ -106,7 +125,7 @@ export default function CarModal({
       (wrapper as any).msRequestFullscreen();
     }
 
-    // Exit and clean up when fullscreen is closed
+    // Clean up when fullscreen exits
     const exitHandler = () => {
       if (document.fullscreenElement === null) {
         wrapper.remove();
@@ -116,7 +135,6 @@ export default function CarModal({
     document.addEventListener("fullscreenchange", exitHandler);
   };
 
-  // Page
   return (
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center p-4 overflow-auto
@@ -124,14 +142,15 @@ export default function CarModal({
       onClick={onClose}
     >
       <div
-        className={`bg-[#111] relative flex flex-col md:flex-row gap-6 shadow-2xl
+        className={`bg-[#111] relative shadow-2xl
           ${
             isMobile
-              ? "w-full h-full m-0 rounded-none p-4 pt-12"
-              : "max-w-5xl w-full max-h-[90vh] rounded-lg p-6 pt-10 pr-10"
+              ? "w-full h-full m-0 rounded-none overflow-y-auto"
+              : "max-w-5xl w-full max-h-[90vh] rounded-lg p-6 pt-10 pr-10 flex flex-row gap-6"
           }`}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Close modal button */}
         <button
           onClick={onClose}
           className={`text-white text-3xl font-bold leading-none
@@ -143,15 +162,50 @@ export default function CarModal({
           &times;
         </button>
 
-        {/* Main Image + Swipe for mobile */}
-        <div className="flex-1 flex flex-col items-center">
-          {isMobile ? (
-            <div {...handlers} className="w-full select-none">
+        {/* MOBILE layout */}
+        {isMobile ? (
+          <div className="w-full relative">
+            <div {...handlers} className="w-full select-none relative">
               <img
                 src={mainImage}
                 alt={`${car.title} image ${currentIndex + 1}`}
-                className="w-full h-[300px] object-cover rounded cursor-pointer"
+                className="w-full h-[300px] object-cover cursor-pointer"
               />
+              {/* Left triangle */}
+              <button
+                onClick={() => handleSwipe("right")}
+                aria-label="Previous image"
+                className="absolute left-0 w-4 h-full ml-2 flex items-center justify-center cursor-pointer"
+                disabled={currentIndex === 0}
+                style={{ top: 0, backgroundColor: "transparent" }}
+              >
+                <div
+                  style={{
+                    width: "100%",
+                    height: "32px",
+                    clipPath: "polygon(100% 0, 0 50%, 100% 100%)",
+                    backgroundColor: "rgba(0, 0, 0, 0.8)", // black 80% opacity
+                  }}
+                />
+              </button>
+
+              {/* Right triangle */}
+              <button
+                onClick={() => handleSwipe("left")}
+                aria-label="Next image"
+                className="absolute right-0 w-4 h-full mr-2 flex items-center justify-center cursor-pointer"
+                disabled={currentIndex === images.length - 1}
+                style={{ top: 0, backgroundColor: "transparent" }}
+              >
+                <div
+                  style={{
+                    width: "100%",
+                    height: "32px",
+                    clipPath: "polygon(0 0, 100% 50%, 0 100%)",
+                    backgroundColor: "rgba(0, 0, 0, 0.8)", // black 80% opacity
+                  }}
+                />
+              </button>
 
               <div className="flex justify-center mt-3 gap-2">
                 {images.map((_, i) => (
@@ -167,58 +221,90 @@ export default function CarModal({
                 {currentIndex + 1} / {images.length}
               </p>
             </div>
-          ) : (
-            <img
-              src={mainImage}
-              alt={car.title}
-              className="w-full h-[400px] object-cover rounded cursor-pointer"
-              onClick={() => openImageFullscreen(mainImage)}
-            />
-          )}
-        </div>
 
-        {/* Thumbnails on desktop */}
-        {!isMobile && (
-          <div className="flex flex-col gap-4 overflow-y-auto max-h-[400px] w-24">
-            {images.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt={`${car.title} thumbnail ${index + 1}`}
-                className={`w-full h-20 object-cover rounded cursor-pointer border-2 ${
-                  mainImage === img ? "border-[#e76e7b]" : "border-transparent"
-                }`}
-                onClick={() => setMainImage(img)}
-              />
-            ))}
+            <div className="p-4 text-white">
+              <h2 className="text-3xl font-bold">{car.title}</h2>
+              <p className="text-sm text-gray-400">{car.catch}</p>
+
+              {car.description && (
+                <>
+                  <h3 className="text-xl font-semibold mt-6 mb-2">
+                    Omschrijving
+                  </h3>
+                  <p className="text-gray-300 leading-relaxed">
+                    {car.description}
+                  </p>
+                </>
+              )}
+
+              <ul className="mt-4 space-y-1 text-sm">
+                <li>Bouwjaar: {car.year}</li>
+                <li>Brandstof: {car.fuel}</li>
+                <li>Kilometerstand: {car.mileage.toLocaleString()} km</li>
+                <li>Transmissie: {car.transmission}</li>
+                <li className="font-semibold text-lg mt-2">
+                  Prijs: €{car.price.toLocaleString()}
+                </li>
+              </ul>
+            </div>
           </div>
+        ) : (
+          <>
+            {/* DESKTOP main image */}
+            <div className="flex-1 flex flex-col items-center">
+              <img
+                src={mainImage}
+                alt={car.title}
+                className="w-full h-[400px] object-cover rounded cursor-pointer"
+                onClick={() => openImageFullscreen(mainImage)}
+              />
+            </div>
+
+            {/* Thumbnails */}
+            <div className="flex flex-col gap-4 overflow-y-auto max-h-[400px] w-24">
+              {images.map((img, index) => (
+                <img
+                  key={index}
+                  src={img}
+                  alt={`${car.title} thumbnail ${index + 1}`}
+                  className={`w-full h-20 object-cover rounded cursor-pointer border-2 ${
+                    mainImage === img
+                      ? "border-[#e76e7b]"
+                      : "border-transparent"
+                  }`}
+                  onClick={() => setMainImage(img)}
+                />
+              ))}
+            </div>
+
+            {/* Details */}
+            <div className="mt-0 md:ml-6 flex-1 text-white overflow-auto">
+              <h2 className="text-3xl font-bold">{car.title}</h2>
+              <p className="text-sm text-gray-400">{car.catch}</p>
+
+              {car.description && (
+                <>
+                  <h3 className="text-xl font-semibold mt-6 mb-2">
+                    Omschrijving
+                  </h3>
+                  <p className="text-gray-300 leading-relaxed">
+                    {car.description}
+                  </p>
+                </>
+              )}
+
+              <ul className="mt-4 space-y-1 text-sm">
+                <li>Bouwjaar: {car.year}</li>
+                <li>Brandstof: {car.fuel}</li>
+                <li>Kilometerstand: {car.mileage.toLocaleString()} km</li>
+                <li>Transmissie: {car.transmission}</li>
+                <li className="font-semibold text-lg mt-2">
+                  Prijs: €{car.price.toLocaleString()}
+                </li>
+              </ul>
+            </div>
+          </>
         )}
-
-        {/* Details */}
-        <div
-          className={`text-white overflow-auto
-            ${isMobile ? "mt-6" : "mt-0 md:ml-6 flex-1"}`}
-        >
-          <h2 className="text-3xl font-bold">{car.title}</h2>
-          <p className="text-sm text-gray-400">{car.catch}</p>
-
-          {car.description && (
-            <>
-              <h3 className="text-xl font-semibold mt-6 mb-2">Omschrijving</h3>
-              <p className="text-gray-300 leading-relaxed">{car.description}</p>
-            </>
-          )}
-
-          <ul className="mt-4 space-y-1 text-sm">
-            <li>Bouwjaar: {car.year}</li>
-            <li>Brandstof: {car.fuel}</li>
-            <li>Kilometerstand: {car.mileage.toLocaleString()} km</li>
-            <li>Transmissie: {car.transmission}</li>
-            <li className="font-semibold text-lg mt-2">
-              Prijs: €{car.price.toLocaleString()}
-            </li>
-          </ul>
-        </div>
       </div>
     </div>
   );
