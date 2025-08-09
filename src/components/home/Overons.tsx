@@ -1,6 +1,7 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
 
 export default function Overons() {
   const [animate, setAnimate] = useState(false);
@@ -24,7 +25,7 @@ export default function Overons() {
         <div className="relative max-w-screen-xl mx-auto px-4">
           <div
             className={`flex flex-col items-center mb-20 transition-all duration-1000 transform ${
-              animate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+              animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
             }`}
           >
             <div className="relative">
@@ -43,7 +44,7 @@ export default function Overons() {
         {/* Team profiles with animated reveal */}
         <div
           className={`transition-all duration-1000 delay-300 transform ${
-            animate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+            animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
           }`}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
@@ -94,9 +95,9 @@ export default function Overons() {
                   </div>
                   <div className="space-y-4">
                     <p className="text-gray-300 leading-relaxed">
-                      &quot;De techniek achter elke auto is een wereld op zich. Mijn
-                      passie ligt bij het ontdekken van verborgen opties en het
-                      maximaliseren van wat jouw auto kan bieden.&quot;
+                      &quot;De techniek achter elke auto is een wereld op zich.
+                      Mijn passie ligt bij het ontdekken van verborgen opties en
+                      het maximaliseren van wat jouw auto kan bieden.&quot;
                     </p>
                     <div className="pt-4">
                       <span className="inline-block text-[#eec0a8] font-semibold">
@@ -113,7 +114,7 @@ export default function Overons() {
         {/* Our story section with parallax effect */}
         <div
           className={`transition-all duration-1000 delay-500 transform ${
-            animate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+            animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
           }`}
         >
           <div className="mb-20 relative">
@@ -131,10 +132,10 @@ export default function Overons() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                   <div className="space-y-6">
                     <p className="text-xl text-white leading-relaxed">
-                      Bij{' '}
+                      Bij{" "}
                       <span className="font-bold text-[#e76e7b]">
                         NXT Motion
-                      </span>{' '}
+                      </span>{" "}
                       draait alles om transparantie, kwaliteit en passie. Wat
                       begon als een gedeelde hobby, is uitgegroeid tot een
                       serieuze onderneming.
@@ -258,7 +259,7 @@ export default function Overons() {
         {/* Call to action section with hover effects */}
         <div
           className={`transition-all duration-1000 delay-700 transform ${
-            animate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+            animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
           }`}
         >
           <div className="relative group cursor-pointer">
@@ -403,15 +404,17 @@ export default function Overons() {
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-[#e76e7b] to-[#eec0a8] rounded-2xl blur opacity-60 group-hover:opacity-100 transition duration-300 group-hover:duration-200 animate-pulse"></div>
                       <div className="relative w-60 h-60 rounded-2xl overflow-hidden group-hover:scale-105 transition-all duration-300">
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70 z-10"></div>
-                        <img
+                        <Image
                           src="/nxtmotion-text.png"
                           alt="Luxury car"
-                          className="w-full h-full object-cover object-center"
+                          width={240} // for example
+                          height={240} // adjust as needed
+                          className="object-cover object-center"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             target.onerror = null;
                             target.src =
-                              'https://images.unsplash.com/photo-1583121274602-3e2820c69888?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80';
+                              "https://images.unsplash.com/photo-1583121274602-3e2820c69888?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80";
                           }}
                         />
                         <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
