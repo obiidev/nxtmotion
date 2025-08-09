@@ -146,9 +146,7 @@ export default function Catalogue() {
         )}
       </section>
 
-      {selectedCar && (
-        <CarModalAlt car={selectedCar} onClose={handleCloseModal} />
-      )}
+      {selectedCar && <CarModal car={selectedCar} onClose={handleCloseModal} />}
     </div>
   );
 }
