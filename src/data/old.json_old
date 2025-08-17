@@ -4,19 +4,19 @@
     "title": "Volkswagen Golf",
     "catch": "Reliable hatchback with great fuel efficiency.",
     "description": "Deze Volkswagen Golf 1.6 TDI Comfortline uit 2015 is oorspronkelijk afkomstig uit Duitsland en is in 2018 geïmporteerd naar Nederland. De auto is van de tweede eigenaar en heeft een kilometerstand van 143.000 km. De distributieriem is recent vervangen en de onderhoudshistorie is volledig aanwezig. De auto verkeert in nette staat, zowel van binnen als van buiten, met lichte gebruikerssporen zoals enkele steenslagplekjes op de motorkap en lichte slijtage op de bestuurdersstoel. De achteruitrijcamera functioneert af en toe niet naar behoren. Het interieur is rookvrij en huisdiervrij. De auto is voorzien van originele Volkswagen velgen met zomerbanden en beschikt over opties zoals airco (recent bijgevuld), cruise control en parkeersensoren voor en achter. Er worden twee sleutels meegeleverd. De APK is geldig tot maart 2026. Een betrouwbare en zuinige auto met een transparante geschiedenis, perfect voor dagelijks gebruik.",
-    "cover_image": "vw_golf_front.png",
+    "cover_image": "/images/cars/vw_golf_front.png",
     "additional_images": [
-      "vw_golf_front_2.jpeg",
-      "vw_golf_back.jpeg",
-      "vw_golf_facing_right.jpeg",
-      "vw_golf_facing_left.jpeg",
-      "vw_golf_facing_left_diagonal.jpeg",
-      "vw_golf_kofferbak.jpeg",
-      "vw_golf_panorama_window.jpeg",
-      "vw_golf_backseat.jpeg",
-      "vw_golf_frontseat.jpeg",
-      "vw_golf_wheel_pov.jpeg",
-      "vw_golf_wheel_sideview.jpeg"
+      "/images/cars/vw_golf_front_2.jpeg",
+      "/images/cars/vw_golf_back.jpeg",
+      "/images/cars/vw_golf_facing_right.jpeg",
+      "/images/cars/vw_golf_facing_left.jpeg",
+      "/images/cars/vw_golf_facing_left_diagonal.jpeg",
+      "/images/cars/vw_golf_kofferbak.jpeg",
+      "/images/cars/vw_golf_panorama_window.jpeg",
+      "/images/cars/vw_golf_backseat.jpeg",
+      "/images/cars/vw_golf_frontseat.jpeg",
+      "/images/cars/vw_golf_wheel_pov.jpeg",
+      "/images/cars/vw_golf_wheel_sideview.jpeg"
     ],
     "make": "Volkswagen",
     "year": 2021,
@@ -38,5 +38,19 @@
     "mileage": 55000,
     "transmission": "automatic",
     "price": 22000
+  },
+  {
+    "id": 3,
+    "title": "Volkswagen ID.4",
+    "catch": "All-electric SUV with cutting-edge tech.",
+    "description": "",
+    "cover_image": "/images/cars/vw_id4.png",
+    "additional_images": [],
+    "make": "Volkswagen",
+    "year": 2023,
+    "fuel": "electric",
+    "mileage": 8000,
+    "transmission": "Automatic",
+    "price": 38000
   }
 ]

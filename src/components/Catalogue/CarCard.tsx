@@ -1,22 +1,35 @@
-import allCars from "@/data/cars.json";
+import { useEffect, useState } from "react";
+import { Car } from "@/types/car";
 
-export default function CarCard({
-  car,
-  onClick,
-}: {
-  car: (typeof allCars)[0];
-  onClick: (car: (typeof allCars)[0]) => void;
-}) {
+interface CarCardProps {
+  car: Car;
+  onClick: (car: Car) => void;
+}
+
+export default function CarCard({ car, onClick }: CarCardProps) {
+  const [imageUrl, setImageUrl] = useState(
+    `/api/cars2?file=${encodeURIComponent(car.cover_image)}&t=${Date.now()}`
+  );
+
+  // Update imageUrl if car.cover_image changes (optional, for hot reloads)
+  useEffect(() => {
+    setImageUrl(
+      `/api/cars2?file=${encodeURIComponent(car.cover_image)}&t=${Date.now()}`
+    );
+  }, [car.cover_image]);
+
   return (
     <article
       onClick={() => onClick(car)}
       className="bg-[#111] rounded-lg shadow-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-300"
     >
       <img
-        src={car.cover_image}
+        key={imageUrl} // forces React to remount only when URL changes
+        src={imageUrl} // <-- now uses /api/cars2
         alt={car.title}
         className="w-full h-48 object-cover"
       />
+
       <div className="p-4">
         <h3 className="text-xl font-semibold">{car.title}</h3>
         <p className="text-sm text-gray-400">{car.catch}</p>

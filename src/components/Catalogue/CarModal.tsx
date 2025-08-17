@@ -23,21 +23,26 @@ export default function CarModal({
   car: Car;
   onClose: () => void;
 }) {
-  const images = [car.cover_image, ...(car.additional_images || [])];
+  const API_URL = "/api/cars2?file=";
+
+  // prepend API URL to all images
+  const images = [
+    `${API_URL}${encodeURIComponent(car.cover_image)}`,
+    ...(car.additional_images || []).map(
+      (img) => `${API_URL}${encodeURIComponent(img)}`
+    ),
+  ];
+
   const [mainImage, setMainImage] = useState(images[0]);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Detect if on mobile screen
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768); // Tailwind md breakpoint
-    };
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Prevent background scroll when modal is open
   useEffect(() => {
     const originalStyle = window.getComputedStyle(document.body).overflow;
     document.body.style.overflow = "hidden";
@@ -48,17 +53,14 @@ export default function CarModal({
 
   const currentIndex = images.indexOf(mainImage);
 
-  // Swipe handlers for mobile
   const handleSwipe = (direction: "left" | "right") => {
     if (direction === "left") {
-      // If on last image, go to first, else next image
       setMainImage(
         currentIndex === images.length - 1
           ? images[0]
           : images[currentIndex + 1]
       );
-    } else if (direction === "right") {
-      // If on first image, go to last, else previous image
+    } else {
       setMainImage(
         currentIndex === 0
           ? images[images.length - 1]
@@ -74,7 +76,6 @@ export default function CarModal({
     trackMouse: true,
   });
 
-  // Fullscreen image viewer
   const openImageFullscreen = (imgSrc: string) => {
     const imgElement = document.createElement("img");
     imgElement.src = imgSrc;
@@ -93,7 +94,6 @@ export default function CarModal({
     wrapper.style.position = "relative";
     wrapper.appendChild(imgElement);
 
-    // Close button
     const closeButton = document.createElement("button");
     closeButton.innerHTML = "&times;";
     closeButton.style.position = "absolute";
@@ -107,27 +107,21 @@ export default function CarModal({
     closeButton.style.zIndex = "9999";
 
     closeButton.onclick = () => {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      }
+      if (document.fullscreenElement) document.exitFullscreen();
       wrapper.remove();
     };
 
     wrapper.appendChild(closeButton);
-
     document.body.appendChild(wrapper);
 
-    if (wrapper.requestFullscreen) {
-      wrapper.requestFullscreen();
-    } else if ((wrapper as any).webkitRequestFullscreen) {
+    if (wrapper.requestFullscreen) wrapper.requestFullscreen();
+    else if ((wrapper as any).webkitRequestFullscreen)
       (wrapper as any).webkitRequestFullscreen();
-    } else if ((wrapper as any).msRequestFullscreen) {
+    else if ((wrapper as any).msRequestFullscreen)
       (wrapper as any).msRequestFullscreen();
-    }
 
-    // Clean up when fullscreen exits
     const exitHandler = () => {
-      if (document.fullscreenElement === null) {
+      if (!document.fullscreenElement) {
         wrapper.remove();
         document.removeEventListener("fullscreenchange", exitHandler);
       }
@@ -150,7 +144,6 @@ export default function CarModal({
           }`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close modal button */}
         <button
           onClick={onClose}
           className={`text-white text-3xl font-bold leading-none
@@ -162,7 +155,6 @@ export default function CarModal({
           &times;
         </button>
 
-        {/* MOBILE layout */}
         {isMobile ? (
           <div className="w-full relative">
             <div {...handlers} className="w-full select-none relative">
@@ -171,7 +163,6 @@ export default function CarModal({
                 alt={`${car.title} image ${currentIndex + 1}`}
                 className="w-full h-[300px] object-cover cursor-pointer"
               />
-              {/* Left triangle */}
               <button
                 onClick={() => handleSwipe("right")}
                 aria-label="Previous image"
@@ -184,12 +175,11 @@ export default function CarModal({
                     width: "100%",
                     height: "32px",
                     clipPath: "polygon(100% 0, 0 50%, 100% 100%)",
-                    backgroundColor: "rgba(0, 0, 0, 0.8)", // black 80% opacity
+                    backgroundColor: "rgba(0, 0, 0, 0.8)",
                   }}
                 />
               </button>
 
-              {/* Right triangle */}
               <button
                 onClick={() => handleSwipe("left")}
                 aria-label="Next image"
@@ -202,7 +192,7 @@ export default function CarModal({
                     width: "100%",
                     height: "32px",
                     clipPath: "polygon(0 0, 100% 50%, 0 100%)",
-                    backgroundColor: "rgba(0, 0, 0, 0.8)", // black 80% opacity
+                    backgroundColor: "rgba(0, 0, 0, 0.8)",
                   }}
                 />
               </button>
@@ -225,7 +215,6 @@ export default function CarModal({
             <div className="p-4 text-white">
               <h2 className="text-3xl font-bold">{car.title}</h2>
               <p className="text-sm text-gray-400">{car.catch}</p>
-
               {car.description && (
                 <>
                   <h3 className="text-xl font-semibold mt-6 mb-2">
@@ -236,7 +225,6 @@ export default function CarModal({
                   </p>
                 </>
               )}
-
               <ul className="mt-4 space-y-1 text-sm">
                 <li>Bouwjaar: {car.year}</li>
                 <li>Brandstof: {car.fuel}</li>
@@ -250,7 +238,6 @@ export default function CarModal({
           </div>
         ) : (
           <>
-            {/* DESKTOP main image */}
             <div className="flex-1 flex flex-col items-center">
               <img
                 src={mainImage}
@@ -260,7 +247,6 @@ export default function CarModal({
               />
             </div>
 
-            {/* Thumbnails */}
             <div className="flex flex-col gap-4 overflow-y-auto max-h-[400px] w-24">
               {images.map((img, index) => (
                 <img
@@ -277,11 +263,9 @@ export default function CarModal({
               ))}
             </div>
 
-            {/* Details */}
             <div className="mt-0 md:ml-6 flex-1 text-white overflow-auto">
               <h2 className="text-3xl font-bold">{car.title}</h2>
               <p className="text-sm text-gray-400">{car.catch}</p>
-
               {car.description && (
                 <>
                   <h3 className="text-xl font-semibold mt-6 mb-2">
@@ -292,7 +276,6 @@ export default function CarModal({
                   </p>
                 </>
               )}
-
               <ul className="mt-4 space-y-1 text-sm">
                 <li>Bouwjaar: {car.year}</li>
                 <li>Brandstof: {car.fuel}</li>

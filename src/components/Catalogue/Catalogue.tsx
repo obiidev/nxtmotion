@@ -1,31 +1,59 @@
 "use client";
 
-// --- Imports ---
-import { useEffect, useState, useRef } from "react";
-import allCars from "@/data/cars.json";
+import { useEffect, useState } from "react";
 import FilterPanel from "@/components/Catalogue/FilterPanel";
 import CarCard from "@/components/Catalogue/CarCard";
 import CarModal from "@/components/Catalogue/CarModal";
+import { Car } from "@/types/car";
 
-// --- Utility functions ---
 const roundToNearest = (num: number, nearest: number) =>
   Math.ceil(num / nearest) * nearest;
 
-// --- Filter function ---
-function filterCars(
-  cars: typeof allCars,
-  filters: {
-    make: string;
-    year: string;
-    fuel: string;
-    mileage: string;
-    transmission: string;
-    priceRange: string;
-  }
-) {
-  const { make, year, fuel, mileage, transmission, priceRange } = filters;
+export default function Catalogue() {
+  const [cars, setCars] = useState<Car[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  return cars.filter((car) => {
+  const [filters, setFilters] = useState({
+    make: "",
+    year: "",
+    fuel: "",
+    mileage: "",
+    transmission: "",
+    priceRange: "",
+  });
+
+  const [showFilter, setShowFilter] = useState(false);
+  const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+
+  const API_KEY = process.env.NEXT_PUBLIC_API_KEY || "";
+
+  // --- Fetch cars dynamically from API ---
+  useEffect(() => {
+    async function fetchCars() {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch("/api/cars", {
+          headers: { "x-api-key": API_KEY },
+          cache: "no-store",
+        });
+        if (!res.ok) throw new Error(`API error: ${res.status}`);
+        const data: Car[] = await res.json();
+        setCars(data);
+      } catch (err: any) {
+        setError(err.message || "Failed to load cars");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchCars();
+  }, []);
+
+  // --- Filtering logic ---
+  const filteredCars = cars.filter((car) => {
+    const { make, year, fuel, mileage, transmission, priceRange } = filters;
+
     const matchesMake =
       !make || car.make.toLowerCase().includes(make.toLowerCase());
     const matchesYear = !year || car.year >= parseInt(year);
@@ -37,9 +65,7 @@ function filterCars(
     let matchesPrice = true;
     if (priceRange) {
       const maxPrice = parseInt(priceRange);
-      if (!isNaN(maxPrice)) {
-        matchesPrice = car.price <= maxPrice;
-      }
+      if (!isNaN(maxPrice)) matchesPrice = car.price <= maxPrice;
     }
 
     return (
@@ -51,28 +77,18 @@ function filterCars(
       matchesPrice
     );
   });
-}
 
-// --- Main Catalogue Page ---
-export default function Catalogue() {
-  const [showFilter, setShowFilter] = useState(false);
-  const [selectedCar, setSelectedCar] = useState<(typeof allCars)[0] | null>(
-    null
-  );
-  const [filters, setFilters] = useState({
-    make: "",
-    year: "",
-    fuel: "",
-    mileage: "",
-    transmission: "",
-    priceRange: "",
-  });
+  // --- Price options for filter ---
+  const prices = cars.map((car) => car.price);
+  const roundedMin = prices.length
+    ? roundToNearest(Math.min(...prices), 1000)
+    : 0;
+  const roundedMax = prices.length
+    ? roundToNearest(Math.max(...prices), 1000)
+    : 0;
 
-  const prices = allCars.map((car) => car.price);
-  const roundedMin = roundToNearest(Math.min(...prices), 1000);
-  const roundedMax = roundToNearest(Math.max(...prices), 1000);
   const increment = 5000;
-  const priceOptions = [];
+  const priceOptions: number[] = [];
   for (
     let price = increment;
     price <= roundedMax + increment;
@@ -81,24 +97,25 @@ export default function Catalogue() {
     if (price >= roundedMin) priceOptions.push(price);
   }
 
-  const filteredCars = filterCars(allCars, filters);
-
+  // --- Handlers ---
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setFilters({ ...filters, [e.target.id]: e.target.value });
   };
 
-  const [mainImage, setMainImage] = useState<string>("");
-
-  const handleCardClick = (car: (typeof allCars)[0]) => {
+  const handleCardClick = (car: Car) => {
     setSelectedCar(car);
-    setMainImage(car.cover_image);
   };
 
   const handleCloseModal = () => {
     setSelectedCar(null);
   };
+
+  // --- UI States ---
+  if (loading)
+    return <p className="text-center text-gray-300">Loading cars...</p>;
+  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
   return (
     <div className="relative max-w-7xl mx-auto px-8 sm:px-16 py-12 pt-24">

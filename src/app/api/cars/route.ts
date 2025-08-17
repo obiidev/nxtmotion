@@ -73,15 +73,9 @@ export async function POST(request: Request) {
       if (coverFile && coverFile.name) {
         const buffer = Buffer.from(await coverFile.arrayBuffer());
         const fileName = `${Date.now()}_${coverFile.name}`;
-        const savePath = path.join(
-          process.cwd(),
-          "public",
-          "images",
-          "cars",
-          fileName
-        );
+        const savePath = path.join(process.cwd(), "uploads", fileName);
         await fs.writeFile(savePath, buffer);
-        cover_image = `/images/cars/${fileName}`;
+        cover_image = `${fileName}`;
       }
 
       let additional_images: string[] = [];
@@ -91,15 +85,9 @@ export async function POST(request: Request) {
           const fileName = `${Date.now()}_${Math.random()
             .toString(36)
             .slice(2)}_${file.name}`;
-          const savePath = path.join(
-            process.cwd(),
-            "public",
-            "images",
-            "cars",
-            fileName
-          );
+          const savePath = path.join(process.cwd(), "uploads", fileName);
           await fs.writeFile(savePath, buffer);
-          additional_images.push(`/images/cars/${fileName}`);
+          additional_images.push(`${fileName}`);
         }
       }
 
@@ -177,15 +165,9 @@ export async function PUT(request: Request) {
       if (coverFile && coverFile.name) {
         const buffer = Buffer.from(await coverFile.arrayBuffer());
         const fileName = `${Date.now()}_${coverFile.name}`;
-        const savePath = path.join(
-          process.cwd(),
-          "public",
-          "images",
-          "cars",
-          fileName
-        );
+        const savePath = path.join(process.cwd(), "uploads", fileName);
         await fs.writeFile(savePath, buffer);
-        cover_image = `/images/cars/${fileName}`;
+        cover_image = `${fileName}`;
       }
 
       let additional_images = cars[index].additional_images;
@@ -197,15 +179,9 @@ export async function PUT(request: Request) {
             const fileName = `${Date.now()}_${Math.random()
               .toString(36)
               .slice(2)}_${file.name}`;
-            const savePath = path.join(
-              process.cwd(),
-              "public",
-              "images",
-              "cars",
-              fileName
-            );
+            const savePath = path.join(process.cwd(), "uploads", fileName);
             await fs.writeFile(savePath, buffer);
-            additional_images.push(`/images/cars/${fileName}`);
+            additional_images.push(`${fileName}`);
           }
         }
       }

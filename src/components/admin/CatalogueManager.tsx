@@ -379,7 +379,7 @@ export default function CatalogueManager() {
             >
               <td className="px-4 py-2">
                 <img
-                  src={car.cover_image}
+                  src={"api/cars2?file=" + car.cover_image}
                   alt={car.title}
                   className="w-20 h-auto rounded"
                 />
