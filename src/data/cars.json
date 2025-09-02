@@ -1,3 +1,16 @@
 [
-  
+  {
+    "id": 1,
+    "title": "Volkswagen Polo",
+    "catch": "Dealeronderhouden, eerste eigenaar, inclusief 12 maanden garantie.",
+    "description": "Zeer nette en dealeronderhouden Volkswagen Polo 1.0 MPI Comfortline uit 2022 met 68.100 km. Afkomstig van de eerste eigenaar, optisch en technisch in uitstekende staat en geleverd met 12 maanden garantie. Belangrijkste opties: 18 inch lichtmetalen velgen, digitale cockpit, Digitale Climatronic (automatische airco), stoelverwarming voor, Apple CarPlay/Android Auto, LED-verlichting, parkeersensoren, (adaptieve) cruise control, multifunctioneel lederen stuurwiel. 2 originele sleutels, onderhoudsboekjes aanwezig. Algemene gegevens: handgeschakeld (5 versnellingen), benzine, kleur: zwart metallic, interieur: zwart (5 zitplaatsen). APK geldig tot 21-09-2026. CO₂-uitstoot: 105 g/km. Energielabel: B. Motorrijtuigenbelasting: €140–€154 per kwartaal.",
+    "cover_image": ["https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg"],
+    "additional_images": [],
+    "make": "Volkswagen",
+    "year": 2022,
+    "fuel": "petrol",
+    "mileage": 68100,
+    "transmission": "manual",
+    "price": 16950
+  }
 ]
