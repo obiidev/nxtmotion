@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
+import cloudinary from "@/lib/cloudinary";
+
 
 const filePath = path.join(process.cwd(), "src", "data", "cars.json");
 const API_KEY = process.env.API_KEY;
@@ -36,14 +38,28 @@ export async function GET(request: Request) {
   if (!validateApiKey(request)) {
     return corsResponse({ message: "Unauthorized" }, 401);
   }
+
   try {
     const data = await fs.readFile(filePath, "utf-8");
     const cars = JSON.parse(data);
-    return corsResponse(cars);
+
+    // Ensure each car has arrays and strings for images (robust)
+    const sanitizedCars = cars.map((car: any) => ({
+      ...car,
+      cover_image: car.cover_image || "",
+      additional_images: Array.isArray(car.additional_images)
+        ? car.additional_images
+        : [],
+    }));
+
+    return corsResponse(sanitizedCars, 200);
   } catch (error) {
+    console.error("GET /api/cars error:", error);
     return corsResponse({ message: "Failed to load cars" }, 500);
   }
 }
+
+
 export async function POST(request: Request) {
   if (!validateApiKey(request)) {
     return corsResponse({ message: "Unauthorized" }, 401);
@@ -53,6 +69,13 @@ export async function POST(request: Request) {
 
   try {
     let newCar;
+
+    // Read existing cars to get new ID
+    const data = await fs.readFile(filePath, "utf-8");
+    const cars = JSON.parse(data);
+    const newId = cars.length
+      ? Math.max(...cars.map((car: any) => car.id)) + 1
+      : 1;
 
     if (contentType.includes("multipart/form-data")) {
       const formData = await request.formData();
@@ -69,29 +92,47 @@ export async function POST(request: Request) {
       const transmission = formData.get("transmission") as string;
       const price = Number(formData.get("price"));
 
+      // Use per-car folder in Cloudinary
+      const carFolder = `cars/${newId}`;
+
+      // ---- Upload cover image ----
       let cover_image = "";
       if (coverFile && coverFile.name) {
         const buffer = Buffer.from(await coverFile.arrayBuffer());
-        const fileName = `${Date.now()}_${coverFile.name}`;
-        const savePath = path.join(process.cwd(), "uploads", fileName);
-        await fs.writeFile(savePath, buffer);
-        cover_image = `${fileName}`;
+        cover_image = await new Promise<string>((resolve, reject) => {
+          const upload = cloudinary.uploader.upload_stream(
+            { folder: carFolder, public_id: "cover" },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result?.secure_url || "");
+            }
+          );
+          upload.end(buffer);
+        });
       }
 
+      // ---- Upload additional images ----
       let additional_images: string[] = [];
-      for (const file of additionalFiles) {
+      for (let i = 0; i < additionalFiles.length; i++) {
+        const file = additionalFiles[i];
         if (file && file.name) {
           const buffer = Buffer.from(await file.arrayBuffer());
-          const fileName = `${Date.now()}_${Math.random()
-            .toString(36)
-            .slice(2)}_${file.name}`;
-          const savePath = path.join(process.cwd(), "uploads", fileName);
-          await fs.writeFile(savePath, buffer);
-          additional_images.push(`${fileName}`);
+          const url = await new Promise<string>((resolve, reject) => {
+            const upload = cloudinary.uploader.upload_stream(
+              { folder: carFolder, public_id: `additional_${i + 1}` },
+              (error, result) => {
+                if (error) reject(error);
+                else resolve(result?.secure_url || "");
+              }
+            );
+            upload.end(buffer);
+          });
+          additional_images.push(url);
         }
       }
 
       newCar = {
+        id: newId,
         title,
         catch: catchPhrase,
         description,
@@ -107,19 +148,14 @@ export async function POST(request: Request) {
     } else {
       const body = await request.json();
       newCar = {
+        id: newId,
         ...body,
         cover_image: body.cover_image || "",
         additional_images: body.additional_images || [],
       };
     }
 
-    const data = await fs.readFile(filePath, "utf-8");
-    const cars = JSON.parse(data);
-    const newId = cars.length
-      ? Math.max(...cars.map((car: any) => car.id)) + 1
-      : 1;
-    newCar.id = newId;
-
+    // ---- Save new car to cars.json ----
     cars.push(newCar);
     await fs.writeFile(filePath, JSON.stringify(cars, null, 2), "utf-8");
 
@@ -140,12 +176,19 @@ export async function PUT(request: Request) {
   try {
     let updatedCar;
 
+    // Read current cars
+    const data = await fs.readFile(filePath, "utf-8");
+    const cars = JSON.parse(data);
+
     if (contentType.includes("multipart/form-data")) {
       const formData = await request.formData();
       const coverFile = formData.get("cover_image") as File;
       const additionalFiles = formData.getAll("additional_images") as File[];
 
       const id = Number(formData.get("id"));
+      const index = cars.findIndex((car: any) => car.id === id);
+      if (index === -1) return corsResponse({ message: "Car not found" }, 404);
+
       const title = formData.get("title") as string;
       const catchPhrase = formData.get("catch") as string;
       const description = (formData.get("description") as string) || "";
@@ -156,32 +199,46 @@ export async function PUT(request: Request) {
       const transmission = formData.get("transmission") as string;
       const price = Number(formData.get("price"));
 
-      const data = await fs.readFile(filePath, "utf-8");
-      const cars = JSON.parse(data);
-      const index = cars.findIndex((car: any) => car.id === id);
-      if (index === -1) return corsResponse({ message: "Car not found" }, 404);
+      const carFolder = `cars/${id}`;
 
+      // ---- Cover image ----
       let cover_image = cars[index].cover_image;
       if (coverFile && coverFile.name) {
         const buffer = Buffer.from(await coverFile.arrayBuffer());
-        const fileName = `${Date.now()}_${coverFile.name}`;
-        const savePath = path.join(process.cwd(), "uploads", fileName);
-        await fs.writeFile(savePath, buffer);
-        cover_image = `${fileName}`;
+        cover_image = await new Promise<string>((resolve, reject) => {
+          const upload = cloudinary.uploader.upload_stream(
+            { folder: carFolder, public_id: "cover" },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result?.secure_url || "");
+            }
+          );
+          upload.end(buffer);
+        });
       }
 
+      // ---- Additional images ----
       let additional_images = cars[index].additional_images;
       if (additionalFiles.length > 0) {
+        // Delete old additional images
+        await cloudinary.api.delete_resources_by_prefix(`${carFolder}/additional_`);
+
         additional_images = [];
-        for (const file of additionalFiles) {
+        for (let i = 0; i < additionalFiles.length; i++) {
+          const file = additionalFiles[i];
           if (file && file.name) {
             const buffer = Buffer.from(await file.arrayBuffer());
-            const fileName = `${Date.now()}_${Math.random()
-              .toString(36)
-              .slice(2)}_${file.name}`;
-            const savePath = path.join(process.cwd(), "uploads", fileName);
-            await fs.writeFile(savePath, buffer);
-            additional_images.push(`${fileName}`);
+            const url = await new Promise<string>((resolve, reject) => {
+              const upload = cloudinary.uploader.upload_stream(
+                { folder: carFolder, public_id: `additional_${i + 1}` },
+                (error, result) => {
+                  if (error) reject(error);
+                  else resolve(result?.secure_url || "");
+                }
+              );
+              upload.end(buffer);
+            });
+            additional_images.push(url);
           }
         }
       }
@@ -207,8 +264,6 @@ export async function PUT(request: Request) {
       return corsResponse(updatedCar);
     } else {
       const body = await request.json();
-      const data = await fs.readFile(filePath, "utf-8");
-      const cars = JSON.parse(data);
       const index = cars.findIndex((car: any) => car.id === body.id);
       if (index === -1) return corsResponse({ message: "Car not found" }, 404);
 
@@ -231,10 +286,12 @@ export async function PUT(request: Request) {
   }
 }
 
+
 export async function DELETE(request: Request) {
   if (!validateApiKey(request)) {
     return corsResponse({ message: "Unauthorized" }, 401);
   }
+
   try {
     const { searchParams } = new URL(request.url);
     const id = Number(searchParams.get("id"));
@@ -242,14 +299,21 @@ export async function DELETE(request: Request) {
       return corsResponse({ message: "Missing id" }, 400);
     }
 
+    // Remove car from cars.json
     const data = await fs.readFile(filePath, "utf-8");
     let cars = JSON.parse(data);
-
     cars = cars.filter((car: any) => car.id !== id);
-
     await fs.writeFile(filePath, JSON.stringify(cars, null, 2), "utf-8");
-    return corsResponse({ message: "Car deleted" });
+
+    // ---- Delete entire Cloudinary folder for this car ----
+    const folder = `cars/${id}`;
+    await cloudinary.api.delete_resources_by_prefix(folder);
+    // Optionally remove the folder itself
+    await cloudinary.api.delete_folder(folder);
+
+    return corsResponse({ message: "Car and its images deleted" });
   } catch (error) {
+    console.error(error);
     return corsResponse({ message: "Failed to delete car" }, 500);
   }
 }
