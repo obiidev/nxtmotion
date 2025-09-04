@@ -3,7 +3,7 @@
 import { useEffect, useState, ChangeEvent, FormEvent } from "react";
 
 interface Car {
-  id: number;
+  _id: number;
   title: string;
   catch: string;
   description: string;
@@ -84,7 +84,7 @@ export default function CatalogueManager() {
   }
 
   function handleEditClick(car: Car) {
-    setEditingCarId(car.id);
+    setEditingCarId(car._id);
     setFormState({
       title: car.title,
       catch: car.catch,
@@ -374,7 +374,7 @@ export default function CatalogueManager() {
         <tbody>
           {cars.map((car) => (
             <tr
-              key={car.id}
+              key={car._id}
               className="border-b border-gray-800 hover:bg-[#222]"
             >
               <td className="px-4 py-2">
@@ -401,7 +401,7 @@ export default function CatalogueManager() {
                   ✏️
                 </button>
                 <button
-                  onClick={() => handleDeleteClick(car.id)}
+                  onClick={() => handleDeleteClick(car._id)} // If i change this to _id the code works, but i do get a red squiggly line and get an error because car doesnt have _id?
                   className="text-red-500 hover:text-red-700"
                 >
                   🗑️
