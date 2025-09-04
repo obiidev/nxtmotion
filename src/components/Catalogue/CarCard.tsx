@@ -7,15 +7,11 @@ interface CarCardProps {
 }
 
 export default function CarCard({ car, onClick }: CarCardProps) {
-  const [imageUrl, setImageUrl] = useState(
-    `/api/cars2?file=${encodeURIComponent(car.cover_image)}&t=${Date.now()}`
-  );
+  const [imageUrl, setImageUrl] = useState(car.cover_image);
 
   // Update imageUrl if car.cover_image changes (optional, for hot reloads)
   useEffect(() => {
-    setImageUrl(
-      `/api/cars2?file=${encodeURIComponent(car.cover_image)}&t=${Date.now()}`
-    );
+    setImageUrl(car.cover_image);
   }, [car.cover_image]);
 
   return (
